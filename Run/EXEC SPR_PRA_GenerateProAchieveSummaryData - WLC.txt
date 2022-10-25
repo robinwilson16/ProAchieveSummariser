@@ -3,16 +3,12 @@ DECLARE @ProviderRef NVARCHAR(50) = 'EHWLC' --Reference to save into table in ca
 DECLARE @AcademicYear NVARCHAR(5) = ''
 
 SET @AcademicYear = (SELECT CFG.Value FROM Config CFG WHERE CFG.ConfigID = 'PRA_AcademicYearID')
-SET @AcademicYear = '20/21' --Override
+--SET @AcademicYear = '22/23' --Override
 DECLARE @CollegeType INT = 2 --Type of national averages - 2=GFE, 0=All Institutions
 DECLARE @Mode CHAR(1) = 'I' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
 DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = '[WLCBA-PGPA001A].ProGeneral.dbo.' --Database/Linked Server location
 DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = '[WLCBA-PGPA001A].ProAchieve.dbo.' --Database/Linked Server location
 DECLARE @OutputTableLocation NVARCHAR(200) = 'wlc.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
-DECLARE @CollegeStructureLevel INT = 3 --Level of hierarchy for College
-DECLARE @FacStructureLevel INT = 1 --Level of hierarchy for Faculty
-DECLARE @TeamStructureLevel INT = 2 --Level of hierarchy for Team
-DECLARE @CostCentreStructureLevel INT = 4 --Level of hierarchy for Cost Centre
 DECLARE @UserDefinedTrueValue NVARCHAR(50) = 'True' --The value that indicates ALS is provided - e.g. Y/True
 DECLARE @ALSStudentUserDefinedField INT = 2 --UDF where ALS is imported as Y/N
 DECLARE @LookedAfterStudentUserDefinedField INT = 1
@@ -37,10 +33,6 @@ SET @SQLString = N'
         @ProGeneralDatabaseLocation,
         @ProAchieveDatabaseLocation,
         @OutputTableLocation,
-		@CollegeStructureLevel,
-		@FacStructureLevel,
-		@TeamStructureLevel,
-		@CostCentreStructureLevel,
 		@UserDefinedTrueValue,
 		@ALSStudentUserDefinedField,
 		@LookedAfterStudentUserDefinedField,
@@ -60,10 +52,6 @@ SET @SQLParams =
         @ProGeneralDatabaseLocation NVARCHAR(200),
         @ProAchieveDatabaseLocation NVARCHAR(200),
         @OutputTableLocation NVARCHAR(200),
-		@CollegeStructureLevel INT,
-		@FacStructureLevel INT,
-		@TeamStructureLevel INT,
-		@CostCentreStructureLevel INT,
 		@UserDefinedTrueValue NVARCHAR(50),
 		@ALSStudentUserDefinedField INT,
 		@LookedAfterStudentUserDefinedField INT,
@@ -85,10 +73,6 @@ EXECUTE sp_executesql
     @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
     @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
     @OutputTableLocation = @OutputTableLocation,
-	@CollegeStructureLevel = @CollegeStructureLevel,
-	@FacStructureLevel = @FacStructureLevel,
-	@TeamStructureLevel = @TeamStructureLevel,
-	@CostCentreStructureLevel = @CostCentreStructureLevel,
 	@UserDefinedTrueValue = @UserDefinedTrueValue,
 	@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
 	@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,

@@ -1,0 +1,39 @@
+DECLARE @AcademicYear VARCHAR(5) = '21/22'
+
+SELECT
+	PA.CollegeCode,
+	PA.CollegeName,
+	PA.FacCode,
+	PA.FacName,
+	PA.TeamCode,
+	PA.TeamName,
+	Starts = SUM ( PA.IsStart ),
+	Cont = SUM ( PA.IsCont ),
+	Comp = SUM ( PA.IsComp ),
+	RetInYr = SUM ( PA.IsRetInYr ),
+	RetInYrPer =
+		ROUND ( 
+			CASE
+				WHEN SUM ( PA.IsStart ) = 0 THEN 0
+				ELSE
+					CAST ( SUM ( PA.IsRetInYr ) AS FLOAT )
+					/
+					CAST ( SUM ( PA.IsStart ) AS FLOAT )
+			END,
+			3
+		)
+FROM PRA_ProAchieveSummaryData PA
+WHERE
+	PA.EndYear = '21/22'
+	AND PA.SummaryType = 'CL_Overall_RulesApplied'
+GROUP BY
+	PA.CollegeCode,
+	PA.CollegeName,
+	PA.FacCode,
+	PA.FacName,
+	PA.TeamCode,
+	PA.TeamName
+ORDER BY
+	PA.CollegeCode,
+	PA.FacCode,
+	PA.TeamCode

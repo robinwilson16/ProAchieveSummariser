@@ -5,10 +5,6 @@ CREATE PROCEDURE SPR_PRA_ProAchieveSummaryData_HETimely
 	@ProGeneralDatabaseLocation NVARCHAR(200),
 	@ProAchieveDatabaseLocation NVARCHAR(200),
 	@OutputTableLocation NVARCHAR(200),
-	@CollegeStructureLevel INT,
-	@FacStructureLevel INT,
-	@TeamStructureLevel INT,
-	@CostCentreStructureLevel INT,
 	@UserDefinedTrueValue NVARCHAR(50),
 	@ALSStudentUserDefinedField INT,
 	@LookedAfterStudentUserDefinedField INT,
@@ -20,23 +16,19 @@ CREATE PROCEDURE SPR_PRA_ProAchieveSummaryData_HETimely
 	@ErrorCode INT OUTPUT
 AS
 BEGIN
-	SET NOCOUNT ON;
-
-	--DECLARE @ProviderID INT = 10001475 --Provider Ref of the college
-	--DECLARE @ProviderRef NVARCHAR(50) = 'EPNE' --Reference to save into table in case title too long for charts etc.
+	SET XACT_ABORT, NOCOUNT ON;
+	
+	--DECLARE @ProviderID INT = 10005077 --Provider Ref of the college
+	--DECLARE @ProviderRef NVARCHAR(50) = 'IEG' --Reference to save into table in case title too long for charts etc.
 	--DECLARE @AcademicYear NVARCHAR(5) = ''
-	--SET @AcademicYear = (SELECT CFG.Value FROM Config CFG WHERE CFG.ConfigID = 'PRA_AcademicYearID')
-	----SET @AcademicYear = '19/20' --Override
 
-	--DECLARE @CollegeType INT = 0 --Type of national averages - 2=GFE, 0=All Institutions
+	--SET @AcademicYear = (SELECT CFG.Value FROM Config CFG WHERE CFG.ConfigID = 'PRA_AcademicYearID')
+	----SET @AcademicYear = '22/23' --Override
+	--DECLARE @CollegeType INT = 2 --Type of national averages - 2=GFE, 0=All Institutions
 	--DECLARE @Mode CHAR(1) = 'I' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
-	--DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'besql05.ProGeneral.dbo.' --Database/Linked Server location
-	--DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'besql05.ProAchieve.dbo.' --Database/Linked Server location
-	--DECLARE @OutputTableLocation NVARCHAR(200) = 'EPNE.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
-	--DECLARE @CollegeStructureLevel INT = 1 --Level of hierarchy for College
-	--DECLARE @FacStructureLevel INT = 2 --Level of hierarchy for Faculty
-	--DECLARE @TeamStructureLevel INT = 3 --Level of hierarchy for Team
-	--DECLARE @CostCentreStructureLevel INT = 4 --Level of hierarchy for Cost Centre
+	--DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = '[IEG-MISSQL-01].ProGeneral.dbo.' --Database/Linked Server location
+	--DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = '[IEG-MISSQL-01].ProAchieve.dbo.' --Database/Linked Server location
+	--DECLARE @OutputTableLocation NVARCHAR(200) = 'IEG.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
 	--DECLARE @UserDefinedTrueValue NVARCHAR(50) = 'Y' --The value that indicates ALS is provided - e.g. Y/True
 	--DECLARE @ALSStudentUserDefinedField INT = 1 --UDF where ALS is imported as Y/N
 	--DECLARE @LookedAfterStudentUserDefinedField INT = 3
@@ -49,8 +41,6 @@ BEGIN
 	--DECLARE @ErrorCode INT
 
 
-
-
     DECLARE @SQLString NVARCHAR(MAX);
     DECLARE @SQLParams NVARCHAR(MAX);
 
@@ -60,9 +50,11 @@ BEGIN
 		SELECT
 			EndYear = HE.PG_ExpEndYrID,
 			AcademicYear = HE.PG_AcademicYearID,
-			SummaryType =
-                ''HE_Timely_''
-                + CASE
+			StartYear = HE.PG_StartYearID,
+			ProvisionType = ''HE'',
+			SummaryType = ''Timely'',
+			SummaryMeasure =
+                CASE
                     WHEN 
                         MYS.DefaultSummary = 1
                         AND MYS.IsArchived = 0
@@ -71,7 +63,11 @@ BEGIN
                         THEN ''AllAims''
                     ELSE ''ERROR''
                 END,
-			DefaultSummary = MYS.DefaultSummary,
+			IsDefaultSummary = MYS.DefaultSummary,
+			IsArchivedSummary = MYS.IsArchived,
+			IsQSRSummary = 0,
+			IsRulesAppliedSummary = MYS.RulesApplied,
+			IsAllAimTypesSummary = MYS.IncludeAllAimTypes,
 			ProviderID = MYS.PG_ProviderID,
 			ProviderRef = @ProviderRef,
 			ProviderName = MYS.PG_ProviderName,
@@ -126,7 +122,16 @@ BEGIN
 			EthnicGroupSimpleOrder = ETHGS.PG_EthnicGroupSimpleOrder,
 			DiffDissCode = HE.PG_DifficultyOrDisabilityID,
 			DiffDissName = DIF.ShortDescription,
+			DifficultyCode = HE.PG_DisabilityID,
+			DifficultyName = DIS.Description,
+			DifficultyShortName = DIS.ShortDescription,
 			IsHighNeeds = COALESCE ( FAM.PG_LearnFAMTypeHNSID, 0 ),
+			EHCPCode = FAM.PG_LearnFAMTypeEHCID,
+			EHCPName = EHC.PG_LearnFAMTypeEHCName,
+			EHCPShortName = EHC.PG_LearnFAMTypeEHCShortName,
+			LearningSupportFundCode = FAMLD.PG_LearnDelFAMTypeLSFID,
+			LearningSupportFundName = LSF.PG_LearnDelFAMTypeLSFName,
+			LearningSupportFundShortName = LSF.PG_LearnDelFAMTypeLSFShortName,
 			IsFreeMealsEligible = CASE WHEN FAM.PG_LearnFAMTypeFMEID IS NOT NULL THEN 1 ELSE 0 END,
 	'
     
@@ -202,86 +207,14 @@ BEGIN
     SET @SQLString += 
         N'
 			CampusID = COALESCE ( STU.CampusID, ''-'' ),
-			CollegeCode = 
-				COALESCE ( 
-					CASE 
-						WHEN @CollegeStructureLevel = 1 THEN L1.GN_Structure1IYID
-						WHEN @CollegeStructureLevel = 2 THEN L2.GN_Structure2IYID
-						WHEN @CollegeStructureLevel = 3 THEN L3.GN_Structure3IYID
-						WHEN @CollegeStructureLevel = 4 THEN L4.GN_Structure4IYID
-					END,
-					''-''
-				),
-			CollegeName = 
-				COALESCE ( 
-					CASE 
-						WHEN @CollegeStructureLevel = 1 THEN L1.GN_Structure1IYName
-						WHEN @CollegeStructureLevel = 2 THEN L2.GN_Structure2IYName
-						WHEN @CollegeStructureLevel = 3 THEN L3.GN_Structure3IYName
-						WHEN @CollegeStructureLevel = 4 THEN L4.GN_Structure4IYName
-					END,
-					''-- Unknown --''
-				),
-			FacCode = 
-				COALESCE ( 
-					CASE 
-						WHEN @FacStructureLevel = 1 THEN L1.GN_Structure1IYID
-						WHEN @FacStructureLevel = 2 THEN L2.GN_Structure2IYID
-						WHEN @FacStructureLevel = 3 THEN L3.GN_Structure3IYID
-						WHEN @FacStructureLevel = 4 THEN L4.GN_Structure4IYID
-					END,
-					''-''
-				),
-			FacName = 
-				COALESCE ( 
-					CASE 
-						WHEN @FacStructureLevel = 1 THEN L1.GN_Structure1IYName
-						WHEN @FacStructureLevel = 2 THEN L2.GN_Structure2IYName
-						WHEN @FacStructureLevel = 3 THEN L3.GN_Structure3IYName
-						WHEN @FacStructureLevel = 4 THEN L4.GN_Structure4IYName
-					END,
-					''-- Unknown --''
-				),
-			TeamCode = 
-				COALESCE ( 
-					CASE 
-						WHEN @TeamStructureLevel = 1 THEN L1.GN_Structure1IYID
-						WHEN @TeamStructureLevel = 2 THEN L2.GN_Structure2IYID
-						WHEN @TeamStructureLevel = 3 THEN L3.GN_Structure3IYID
-						WHEN @TeamStructureLevel = 4 THEN L4.GN_Structure4IYID
-					END,
-					''-''
-				),
-			TeamName = 
-				COALESCE ( 
-					CASE 
-						WHEN @TeamStructureLevel = 1 THEN L1.GN_Structure1IYName
-						WHEN @TeamStructureLevel = 2 THEN L2.GN_Structure2IYName
-						WHEN @TeamStructureLevel = 3 THEN L3.GN_Structure3IYName
-						WHEN @TeamStructureLevel = 4 THEN L4.GN_Structure4IYName
-					END,
-					''-- Unknown --''
-				),
-			CostCentreCode = 
-				COALESCE ( 
-					CASE 
-						WHEN @CostCentreStructureLevel = 1 THEN L1.GN_Structure1IYID
-						WHEN @CostCentreStructureLevel = 2 THEN L2.GN_Structure2IYID
-						WHEN @CostCentreStructureLevel = 3 THEN L3.GN_Structure3IYID
-						WHEN @CostCentreStructureLevel = 4 THEN L4.GN_Structure4IYID
-					END,
-					''-''
-				),
-			CostCentreName = 
-				COALESCE ( 
-					CASE 
-						WHEN @CostCentreStructureLevel = 1 THEN L1.GN_Structure1IYName
-						WHEN @CostCentreStructureLevel = 2 THEN L2.GN_Structure2IYName
-						WHEN @CostCentreStructureLevel = 3 THEN L3.GN_Structure3IYName
-						WHEN @CostCentreStructureLevel = 4 THEN L4.GN_Structure4IYName
-					END,
-					''-- Unknown --''
-				),
+			CollegeLevel1Code = COALESCE ( L1.GN_Structure1IYID, ''-'' ),
+			CollegeLevel1Name = COALESCE ( L1.GN_Structure1IYName, ''-- Unknown --'' ),
+			CollegeLevel2Code = COALESCE ( L2.GN_Structure2IYID, ''-'' ),
+			CollegeLevel2Name = COALESCE ( L2.GN_Structure2IYName, ''-- Unknown --'' ),
+			CollegeLevel3Code = COALESCE ( L3.GN_Structure3IYID, ''-'' ),
+			CollegeLevel3Name = COALESCE ( L3.GN_Structure3IYName, ''-- Unknown --'' ),
+			CollegeLevel4Code = COALESCE ( L4.GN_Structure4IYID, ''-'' ),
+			CollegeLevel4Name = COALESCE ( L4.GN_Structure4IYName, ''-- Unknown --'' ),
 	'
 
     SET @SQLString += 
@@ -593,6 +526,19 @@ BEGIN
 			ON FAM.PG_StudentID = HE.PG_StudentID
 			AND FAM.PG_ProviderID = HE.PG_ProviderID
 			AND FAM.PG_AcademicYearID = HE.PG_AcademicYearID
+		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_LearnFAMTypeEHC EHC
+			ON EHC.PG_LearnFAMTypeEHCID = FAM.PG_LearnFAMTypeEHCID
+		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_LearningDelivery_FAM_Pivoted FAMLD
+			ON FAMLD.PG_StudentID = HE.PG_StudentID
+			AND FAMLD.PG_ProviderID = HE.PG_ProviderID
+			AND FAMLD.PG_AcademicYearID = HE.PG_AcademicYearID
+			AND FAMLD.SequenceNo = HE.SequenceNo
+		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_LearnDelFAMTypeLSF LSF
+			ON LSF.PG_LearnDelFAMTypeLSFID = FAMLD.PG_LearnDelFAMTypeLSFID
+	'
+
+    SET @SQLString += 
+        N'
 		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NVQLevel LVL
 			ON LVL.PG_NVQLevelID = HE.PG_NVQLevelID
 		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NVQLevelCPR LVLC
@@ -626,6 +572,8 @@ BEGIN
 			ON CRS.PG_AggCourseID = HE.PG_AggCourseID
 		LEFT JOIN ' + @ProGeneralDatabaseLocation + 'DifficultyOrDisability DIF
 			ON DIF.DifficultyOrDisabilityID = HE.PG_DifficultyOrDisabilityID
+		LEFT JOIN ' + @ProGeneralDatabaseLocation + 'Disability DIS
+			ON DIS.DisabilityID = HE.PG_DisabilityID
 		LEFT JOIN ' + @ProGeneralDatabaseLocation + 'Enrolment_Attendance ATT 
 			ON ATT.StudentID = HE.PG_StudentID
 			AND ATT.CollegeID = HE.PG_ProviderID
@@ -650,10 +598,6 @@ BEGIN
 		@AcademicYear NVARCHAR(5),
 	    @CollegeType INT,
 		@OutputTableLocation NVARCHAR(200),
-		@CollegeStructureLevel INT,
-		@FacStructureLevel INT,
-		@TeamStructureLevel INT,
-		@CostCentreStructureLevel INT,
 		@UserDefinedTrueValue NVARCHAR(50),
 		@ALSStudentUserDefinedField INT,
 		@LookedAfterStudentUserDefinedField INT,
@@ -669,10 +613,6 @@ BEGIN
         @AcademicYear = @AcademicYear, 
         @CollegeType = @CollegeType,
 		@OutputTableLocation = @OutputTableLocation,
-		@CollegeStructureLevel = @CollegeStructureLevel,
-		@FacStructureLevel = @FacStructureLevel,
-		@TeamStructureLevel = @TeamStructureLevel,
-		@CostCentreStructureLevel = @CostCentreStructureLevel,
 		@UserDefinedTrueValue = @UserDefinedTrueValue,
 		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
 		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
