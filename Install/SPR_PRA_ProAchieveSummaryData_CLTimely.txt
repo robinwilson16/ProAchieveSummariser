@@ -397,8 +397,8 @@ BEGIN
 					ELSE 0
 				END,
 			IsComp = CL.P_Complete_TimelyQSRExclude,
-			IsRetInYr = CL.PVCont + CL.P_Complete_TimelyQSRExclude,
-			IsRet = CL.PVCont + CL.P_Complete_TimelyQSRExclude,
+			IsRetInYr = CL.PVCont + CL.PVCompV + CL.P_CompUnknown,
+			IsRet = CL.PVCont + CL.PVCompV + CL.P_CompUnknown,
 			IsAch = CL.P_Ach_TimelyQSRExclude,
 			IsAchBestCase = CL.P_Ach_Timely_BestCase,
 			IsPassHigh = CL.PVHigh,

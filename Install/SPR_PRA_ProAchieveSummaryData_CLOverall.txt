@@ -456,9 +456,9 @@ BEGIN
 						CL.CLOverdue = 1 
 						AND CL.QSRExclude_Overall = 0 
 						AND CL.P_Count_OverallQSRExclude = 0 
-						THEN 1 
+						THEN CL.P_Complete_Overall
 					ELSE 
-						CL.P_Count_OverallQSRExclude 
+						CL.PVCont + CL.P_Complete_OverallQSRExclude
 				END,
 			IsAch = CL.P_Ach_OverallQSRExclude,
 			IsAchBestCase = CL.P_Ach_Overall_BestCase,
