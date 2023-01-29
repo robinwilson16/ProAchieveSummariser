@@ -16,7 +16,8 @@ CREATE PROCEDURE SPR_PRA_ProAchieveSummaryData_CLOverall
 	@ErrorCode INT OUTPUT
 AS
 BEGIN
-	SET XACT_ABORT, NOCOUNT ON;
+	SET XACT_ABORT OFF; --To fix error: New transaction is not allowed because there are other threads running in the session
+	SET NOCOUNT ON;
 	
 	--DECLARE @ProviderID INT = 10004579 --Provider Ref of the college
 	--DECLARE @ProviderRef NVARCHAR(50) = 'NewCollegeSwindon' --Reference to save into table in case title too long for charts etc.
