@@ -12,4 +12,4 @@ INSERT INTO Config
 SELECT
 	ConfigID = 'PRA_AcademicYearID',
 	Description = 'Academic Year for the ProAchieve Data Summariser and other ProAchieve scripts',
-	Value = '19/20'
+	Value = '23/24'

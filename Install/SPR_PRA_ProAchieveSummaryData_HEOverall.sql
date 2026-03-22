@@ -1,4 +1,4 @@
-CREATE PROCEDURE SPR_PRA_ProAchieveSummaryData_HETimely
+CREATE OR ALTER PROCEDURE SPR_PRA_ProAchieveSummaryData_HEOverall
 	@ProviderRef NVARCHAR(50),
 	@AcademicYear NVARCHAR(5),
 	@CollegeType INT,
@@ -49,11 +49,11 @@ BEGIN
         N'
 		INSERT INTO ' + @OutputTableLocation + 'PRA_ProAchieveSummaryData WITH (TABLOCKX)
 		SELECT
-			EndYear = HE.PG_ExpEndYrID,
+			EndYear = HE.PG_HybridEndYearID,
 			AcademicYear = HE.PG_AcademicYearID,
 			StartYear = HE.PG_StartYearID,
 			ProvisionType = ''HE'',
-			SummaryType = ''Timely'',
+			SummaryType = ''Overall'',
 			SummaryMeasure =
                 CASE
                     WHEN 
@@ -298,9 +298,12 @@ BEGIN
 			FundStream = HE.PG_FundingStreamID,
 			IsEFAFunded = 0,
 			IsAdvLearnLoanFunded = 0,
-			IsStart = HE.HEStart_Timely,
-			IsLeaver = HE.P_Count_TimelyQSRExclude,
-			IsLeaverBestCase = HE.P_Count_TimelyQSRExclude,
+			IsStart = HE.HEStart_Overall,
+			IsLeaver = HE.P_Count_OverallQSRExclude,
+			IsLeaverBestCase = 
+				HE.P_Count_OverallQSRExclude
+				+
+				HE.PVCont,
 			LessonsExpected = HE.Att_Exp,
 			LessonsAttended = HE.Att_Act,
 			AttendPer = 
@@ -323,15 +326,18 @@ BEGIN
 			IsWdr = HE.PVWithdrawn + HE.PVWithdrawn1stNov,
 			IsWdrInQualifyingPeriod = HE.PVWithdrawn,
 			IsWdrAfterQualifyingPeriod = HE.PVWithdrawn1stNov,
-			IsPlannedBreak = HE.P_Plan_Break_Timely,
+			IsPlannedBreak = HE.P_Plan_Break_Overall,
 			OutOfFunding30 = 0,
 			OutOfFunding60 = 0,
 			OutOfFunding90 = 0,
-			IsComp = HE.P_Complete_TimelyQSRExclude,
-			IsRetInYr = HE.PVCont + HE.P_Complete_TimelyQSRExclude,
-			IsRet = HE.PVCont + HE.P_Complete_TimelyQSRExclude,
-			IsAch = HE.P_Ach_TimelyQSRExclude,
-			IsAchBestCase = HE.P_Ach_TimelyQSRExclude,
+			IsComp = HE.P_Complete_OverallQSRExclude,
+			IsRetInYr = HE.PVCont + HE.P_Complete_OverallQSRExclude,
+			IsRet = HE.PVCont + HE.P_Complete_OverallQSRExclude,
+			IsAch = HE.P_Ach_OverallQSRExclude,
+			IsAchBestCase = 
+				HE.P_Ach_OverallQSRExclude
+				+
+				HE.PVCont,
 			IsPassHigh = HE.PVHigh,
 			IsPassAToC = 0,
 			FrameworkStatusCode = NULL,
@@ -369,6 +375,27 @@ BEGIN
 			NatRate_Aim_AchPer = NULL,
 			NatRate_Aim_Pass = NULL,
 			NatRate_Aim_PassPer = NULL,
+			NatRate_Standard_Leave = NULL,
+			NatRate_Standard_Comp = NULL,
+			NatRate_Standard_RetPer = NULL,
+			NatRate_Standard_Ach = NULL,
+			NatRate_Standard_AchPer = NULL,
+			NatRate_Standard_Pass = NULL,
+			NatRate_Standard_PassPer = NULL,
+			NatRate_FrameworkProg_Leave = NULL,
+			NatRate_FrameworkProg_Comp = NULL,
+			NatRate_FrameworkProg_RetPer = NULL,
+			NatRate_FrameworkProg_Ach = NULL,
+			NatRate_FrameworkProg_AchPer = NULL,
+			NatRate_FrameworkProg_Pass = NULL,
+			NatRate_FrameworkProg_PassPer = NULL,
+			NatRate_Framework_Leave = NULL,
+			NatRate_Framework_Comp = NULL,
+			NatRate_Framework_RetPer = NULL,
+			NatRate_Framework_Ach = NULL,
+			NatRate_Framework_AchPer = NULL,
+			NatRate_Framework_Pass = NULL,
+			NatRate_Framework_PassPer = NULL,
 			NatRate_FworkPTSSA_Leave = NULL,
 			NatRate_FworkPTSSA_Comp = NULL,
 			NatRate_FworkPTSSA_RetPer = NULL,
@@ -620,7 +647,7 @@ BEGIN
 			AND L4.PG_AcademicYearID = HE.PG_AcademicYearID
 		--LEFT JOIN ' + @ProAchieveDatabaseLocation + 'GN_CourseStructureIY CRS 
 		--	ON CRS.PG_CourseID = HE.PG_AggCourseID
-		--	AND CRS.PG_AcademicYearID = HE.PG_ExpEndYrID
+		--	AND CRS.PG_AcademicYearID = HE.PG_HybridEndYearID
 		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_AggCourse CRS 
 			ON CRS.PG_AggCourseID = HE.PG_AggCourseID
 		LEFT JOIN ' + @ProGeneralDatabaseLocation + 'DifficultyOrDisability DIF
@@ -631,18 +658,19 @@ BEGIN
 			ON ATT.StudentID = HE.PG_StudentID
 			AND ATT.CollegeID = HE.PG_ProviderID
 			AND ATT.AcademicYearID = HE.PG_AcademicYearID
-			AND ATT.SequenceNo = HE.SequenceNo
 		LEFT JOIN ' + @ProGeneralDatabaseLocation + 'Student_UDF LAC
 			ON LAC.StudentID = HE.PG_StudentID
 			AND LAC.CollegeID = HE.PG_ProviderID
 			AND LAC.AcademicYearID = HE.PG_AcademicYearID
+			AND ATT.SequenceNo = HE.SequenceNo
 	'
 
     SET @SQLString += 
         N'
 		WHERE 
-			HE.PG_ExpEndYrID = @AcademicYear
-			--AND MYS.LastAcademicYearID = @AcademicYear'
+			HE.PG_HybridEndYearID = @AcademicYear
+			--AND MYS.LastAcademicYearID = @AcademicYear
+	'
 
 	--SELECT @SQLString AS [processing-instruction(x)] FOR XML PATH('')
 

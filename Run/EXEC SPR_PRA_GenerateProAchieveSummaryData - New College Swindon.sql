@@ -5,7 +5,7 @@ DECLARE @AcademicYear NVARCHAR(5) = ''
 SET @AcademicYear = (SELECT CFG.Value FROM Config CFG WHERE CFG.ConfigID = 'PRA_AcademicYearID')
 --SET @AcademicYear = '22/23' --Override
 DECLARE @CollegeType INT = 2 --Type of national averages - 2=GFE, 0=All Institutions
-DECLARE @Mode CHAR(1) = 'R' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
+DECLARE @Mode CHAR(1) = 'I' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
 DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'Ventora.ProGeneral.dbo.' --Database/Linked Server location
 DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'Ventora.ProAchieve.dbo.' --Database/Linked Server location
 DECLARE @OutputTableLocation NVARCHAR(200) = 'ProAchieveDataSummariser.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
