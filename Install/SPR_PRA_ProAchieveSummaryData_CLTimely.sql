@@ -1,7 +1,6 @@
 CREATE OR ALTER PROCEDURE SPR_PRA_ProAchieveSummaryData_CLTimely
 	@ProviderRef NVARCHAR(50),
 	@AcademicYear NVARCHAR(5),
-	@CollegeType INT,
 	@ProGeneralDatabaseLocation NVARCHAR(200),
 	@ProAchieveDatabaseLocation NVARCHAR(200),
 	@OutputTableLocation NVARCHAR(200),
@@ -19,17 +18,16 @@ BEGIN
 	SET XACT_ABORT OFF; --To fix error: New transaction is not allowed because there are other threads running in the session
 	SET NOCOUNT ON;
 	
-	--DECLARE @ProviderID INT = 10004579 --Provider Ref of the college
-	--DECLARE @ProviderRef NVARCHAR(50) = 'NewCollegeSwindon' --Reference to save into table in case title too long for charts etc.
+	--DECLARE @ProviderID INT = 10005979 --Provider Ref of the college
+	--DECLARE @ProviderRef NVARCHAR(50) = 'HSDC' --Reference to save into table in case title too long for charts etc.
 	--DECLARE @AcademicYear NVARCHAR(5) = ''
 
 	--SET @AcademicYear = (SELECT CFG.Value FROM Config CFG WHERE CFG.ConfigID = 'PRA_AcademicYearID')
-	--SET @AcademicYear = '22/23' --Override
-	--DECLARE @CollegeType INT = 2 --Type of national averages - 2=GFE, 0=All Institutions
-	--DECLARE @Mode CHAR(1) = 'R' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
-	--DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'Ventora.ProGeneral.dbo.' --Database/Linked Server location
-	--DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'Ventora.ProAchieve.dbo.' --Database/Linked Server location
-	--DECLARE @OutputTableLocation NVARCHAR(200) = 'ProAchieveDataSummariser.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
+	--SET @AcademicYear = '25/26' --Override
+	--DECLARE @Mode CHAR(1) = 'I' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
+	--DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'ProGeneral.dbo.' --Database/Linked Server location
+	--DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'ProAchieve.dbo.' --Database/Linked Server location
+	--DECLARE @OutputTableLocation NVARCHAR(200) = 'ProAchieveSummariser.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
 	--DECLARE @UserDefinedTrueValue NVARCHAR(50) = 'Y' --The value that indicates ALS is provided - e.g. Y/True
 	--DECLARE @ALSStudentUserDefinedField INT = 1 --UDF where ALS is imported as Y/N
 	--DECLARE @LookedAfterStudentUserDefinedField INT = 3
@@ -58,8 +56,7 @@ BEGIN
 					ELSE @AcademicYear
 				END
 		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_Qual_Timely NR
-		WHERE
-			NR.PG_CollegeTypeID = @CollegeType
+
 		
 		INSERT INTO ' + @OutputTableLocation + 'PRA_ProAchieveSummaryData WITH (TABLOCKX)
 		SELECT
@@ -112,9 +109,9 @@ BEGIN
     
     SET @SQLString += 
         N'
-			LearnerRef = CL.PG_StudentID,
+			LearnRefNumber = CL.PG_StudentID,
 			LearnerName = CL.StudentName,
-			Gender = CL.PG_SexID,
+			Sex = CL.PG_SexID,
 			AgeGroup = 
 				CASE
 					WHEN AGE.PG_AgeLSCName = ''16-18'' THEN ''16 - 18''
@@ -155,15 +152,15 @@ BEGIN
 			EthnicGroupSimpleCode = ETHGS.PG_EthnicGroupSimpleID,
 			EthnicGroupSimpleName = ETHGS.PG_EthnicGroupSimpleName,
 			EthnicGroupSimpleOrder = ETHGS.PG_EthnicGroupSimpleOrder,
-			DiffDissCode = CL.PG_DifficultyOrDisabilityID,
-			DiffDissName = DIF.ShortDescription,
+			HasDifficultyOrDisabilityCode = CL.PG_DifficultyOrDisabilityID,
+			HasDifficultyOrDisabilityName = DIF.ShortDescription,
 			DifficultyCode = CL.PG_DisabilityID,
 			DifficultyName = DIS.Description,
 			DifficultyShortName = DIS.ShortDescription,
 			IsHighNeeds = COALESCE ( FAM.PG_LearnFAMTypeHNSID, 0 ),
-			EHCPCode = FAM.PG_LearnFAMTypeEHCID,
-			EHCPName = EHC.PG_LearnFAMTypeEHCName,
-			EHCPShortName = EHC.PG_LearnFAMTypeEHCShortName,
+			HasEducationalHealthCarePlanCode = FAM.PG_LearnFAMTypeEHCID,
+			HasEducationalHealthCarePlanName = EHC.PG_LearnFAMTypeEHCName,
+			HasEducationalHealthCarePlanShortName = EHC.PG_LearnFAMTypeEHCShortName,
 			LearningSupportFundCode = FAMLD.PG_LearnDelFAMTypeLSFID,
 			LearningSupportFundName = LSF.PG_LearnDelFAMTypeLSFName,
 			LearningSupportFundShortName = LSF.PG_LearnDelFAMTypeLSFShortName,
@@ -254,10 +251,10 @@ BEGIN
 
     SET @SQLString += 
         N'
-			SSA1Code = CL.PG_SSA1ID,
-			SSA1Name = SSA1.SSA_Tier1_Desc,
-			SSA2Code = CL.PG_SSA2ID,
-			SSA2Name = SSA2.SSA_Tier2_Desc,
+			SubjectSectorArea1Code = CL.PG_SSA1ID,
+			SubjectSectorArea1Name = SSA1.SSA_Tier1_Desc,
+			SubjectSectorArea2Code = CL.PG_SSA2ID,
+			SubjectSectorArea2Name = SSA2.SSA_Tier2_Desc,
 			ProgTypeCode = NULL,
 			ProgTypeShortName = NULL,
 			ProgTypeName = NULL,
@@ -282,8 +279,8 @@ BEGIN
 			StartPeriodID = NULL,
 			ExpEndPeriodID = NULL,
 			ActEndPeriodID = NULL,
-			CompletionCode = CL.PG_CompletionID,
-			CompletionName = CMP.ShortDescription,
+			CompletionStatusCode = CL.PG_CompletionID,
+			CompletionStatusName = CMP.ShortDescription,
 			OutcomeCode = CL.PG_OutcomeID,
 			OutcomeName = OC.ShortDescription,
 			SubcontractorCode = CL.PG_SubContractorID,
@@ -297,12 +294,12 @@ BEGIN
 
     SET @SQLString += 
         N'
-			AimRef = AIM.GN_AimID,
-			AimName = AIM.GN_AimName,
-			QualTypeCode = CL.PG_QualSizeID,
-			QualTypeName = QS.PG_QualSizeName,
-			LARSAimTypeCode = CL.PG_QType1ID,
-			LARSAimTypeName = QT.PG_LearningAimTypeName,
+			LearningAimCode = AIM.GN_AimID,
+			LearningAimTitle = AIM.GN_AimName,
+			LearningAimTypeCode = CL.PG_QType1ID,
+			LearningAimTypeName = QT.PG_LearningAimTypeName,
+			QualificationTypeCode = CL.PG_QualSizeID,
+			QualificationTypeName = QS.PG_QualSizeName,
 			AimTypeCode = CL.PG_ILRAimTypeID,
 			AimTypeName = AIMT.PG_ILRAimTypeName,
 			DurationCode = CL.PG_DurationID,
@@ -318,30 +315,30 @@ BEGIN
 			EngOrMathsName = COALESCE ( EM.PG_MathsEnglishName, ''Neither'' ),
 			NVQLevelCode = CL.PG_NVQLevelID,
 			NVQLevelName = LVLC.PG_NVQLevelCPRName,
-			NVQLevelGrpCode = LVL.PG_NVQLevelGroupID,
-			NVQLevelGrpName = LVLG.Description,
+			NVQLevelGroupCode = LVL.PG_NVQLevelGroupID,
+			NVQLevelGroupName = LVLG.Description,
 			LevelOfStudyCode = NULL,
 			LevelOfStudyName = NULL,
 			QOECode = NULL,
 			QOEName = NULL,
-			AwardBody = AIM.PG_AwardBodyID,
+			AwardingBody = AIM.PG_AwardBodyID,
 			Grade = CL.PG_GradeID,
 
-			FundModelCode = 
+			FundingModelCode = 
 				CASE
 					WHEN CL.FundType = ''16-19 (excluding Apprenticeships)'' THEN ''1619''
 					WHEN CL.FundType = ''Adult skills'' THEN ''ADULT''
 					WHEN CL.FundType = ''24+ Loan'' THEN ''LOAN''
 					ELSE ''X''
 				END,
-			FundModelName = 
+			FundingModelName = 
 				CASE
 					WHEN CL.FundType = ''16-19 (excluding Apprenticeships)'' THEN ''16-19 Funded''
 					WHEN CL.FundType = ''Adult skills'' THEN ''Adult Funded''
 					WHEN CL.FundType = ''24+ Loan'' THEN ''Loan Funded''
 					ELSE ''-- Unknown --''
 				END,
-			FundStream = CL.PG_FundingStreamID,
+			FundingStream = CL.PG_FundingStreamID,
 			IsEFAFunded = CASE WHEN CL.IsEFA_Funded = ''Y'' THEN 1 ELSE 0 END,
 			IsAdvLearnLoanFunded = CL.Loan_Funded,
 			IsStart = CL.CLStartTimely,
@@ -349,7 +346,7 @@ BEGIN
 			IsLeaverBestCase = CL.P_Count_Timely_BestCase,
 			LessonsExpected = CL.Att_Exp,
 			LessonsAttended = CL.Att_Act,
-			AttendPer = 
+			AttendancePer = 
 				ROUND (
 					CASE
 						WHEN CL.Att_Exp = 0 THEN 0
@@ -357,7 +354,7 @@ BEGIN
 					END
 				, 4 ),
 			LessonsLate = CL.Att_Lat,
-			PuncPer = 
+			PunctualityPer = 
 				ROUND (
 					CASE
 						WHEN CL.Att_Act = 0 THEN 0
@@ -411,195 +408,113 @@ BEGIN
 
     SET @SQLString += 
         N'
-			NatRate_Yr_Leave = NR_YR.Leave,
-			NatRate_Yr_Comp = NR_YR.Comp,
-			NatRate_Yr_RetPer = NR_YR.RetPer,
-			NatRate_Yr_Ach = NR_YR.Ach,
-			NatRate_Yr_AchPer = NR_YR.AchPer,
-			NatRate_Yr_Pass = NR_YR.Pass,
-			NatRate_Yr_PassPer = NR_YR.PassPer,
-			NatRate_YrALL_Leave = NR_YRA.Leave,
-			NatRate_YrALL_Comp = NR_YRA.Comp,
-			NatRate_YrALL_RetPer = NR_YRA.RetPer,
-			NatRate_YrALL_Ach = NR_YRA.Ach,
-			NatRate_YrALL_AchPer = NR_YRA.AchPer,
-			NatRate_YrALL_Pass = NR_YRA.Pass,
-			NatRate_YrALL_PassPer = NR_YRA.PassPer,
-			NatRate_YrGFE_Leave = NR_YRG.Leave,
-			NatRate_YrGFE_Comp = NR_YRG.Comp,
-			NatRate_YrGFE_RetPer = NR_YRG.RetPer,
-			NatRate_YrGFE_Ach = NR_YRG.Ach,
-			NatRate_YrGFE_AchPer = NR_YRG.AchPer,
-			NatRate_YrGFE_Pass = NR_YRG.Pass,
-			NatRate_YrGFE_PassPer = NR_YRG.PassPer,
-			NatRate_Aim_Leave = NR_AIM.BM_Count_Timely,
-			NatRate_Aim_Comp = NULL,
-			NatRate_Aim_RetPer = NULL,
-			NatRate_Aim_Ach = ROUND ( ( CAST ( NR_AIM.BM_Count_Timely AS FLOAT ) / 100 ) * NR_AIM.BM_AchCount_Timely, 0 ),
-			NatRate_Aim_AchPer = NR_AIM.BM_AchCount_Timely / 100,
-			NatRate_Aim_Pass = NULL,
-			NatRate_Aim_PassPer = NULL,
-			NatRate_Standard_Leave = NULL,
-			NatRate_Standard_Comp = NULL,
-			NatRate_Standard_RetPer = NULL,
-			NatRate_Standard_Ach = NULL,
-			NatRate_Standard_AchPer = NULL,
-			NatRate_Standard_Pass = NULL,
-			NatRate_Standard_PassPer = NULL,
-			NatRate_FrameworkProg_Leave = NULL,
-			NatRate_FrameworkProg_Comp = NULL,
-			NatRate_FrameworkProg_RetPer = NULL,
-			NatRate_FrameworkProg_Ach = NULL,
-			NatRate_FrameworkProg_AchPer = NULL,
-			NatRate_FrameworkProg_Pass = NULL,
-			NatRate_FrameworkProg_PassPer = NULL,
-			NatRate_Framework_Leave = NULL,
-			NatRate_Framework_Comp = NULL,
-			NatRate_Framework_RetPer = NULL,
-			NatRate_Framework_Ach = NULL,
-			NatRate_Framework_AchPer = NULL,
-			NatRate_Framework_Pass = NULL,
-			NatRate_Framework_PassPer = NULL,
-			NatRate_FworkPTSSA_Leave = NULL,
-			NatRate_FworkPTSSA_Comp = NULL,
-			NatRate_FworkPTSSA_RetPer = NULL,
-			NatRate_FworkPTSSA_Ach = NULL,
-			NatRate_FworkPTSSA_AchPer = NULL,
-			NatRate_FworkPTSSA_Pass = NULL,
-			NatRate_FworkPTSSA_PassPer = NULL,
-			NatRate_Age_Leave = NR_AGE.Leave,
-			NatRate_Age_Comp = NR_AGE.Comp,
-			NatRate_Age_RetPer = NR_AGE.RetPer,
-			NatRate_Age_Ach = NR_AGE.Ach,
-			NatRate_Age_AchPer = NR_AGE.AchPer,
-			NatRate_Age_Pass = NR_AGE.Pass,
-			NatRate_Age_PassPer = NR_AGE.PassPer,
-			NatRate_Gender_Leave = NR_GEN.Leave,
-			NatRate_Gender_Comp = NR_GEN.Comp,
-			NatRate_Gender_RetPer = NR_GEN.RetPer,
-			NatRate_Gender_Ach = NR_GEN.Ach,
-			NatRate_Gender_AchPer = NR_GEN.AchPer,
-			NatRate_Gender_Pass = NR_GEN.Pass,
-			NatRate_Gender_PassPer = NR_GEN.PassPer,
-			NatRate_GenderAge_Leave = NR_GENAGE.Leave,
-			NatRate_GenderAge_Comp = NR_GENAGE.Comp,
-			NatRate_GenderAge_RetPer = NR_GENAGE.RetPer,
-			NatRate_GenderAge_Ach = NR_GENAGE.Ach,
-			NatRate_GenderAge_AchPer = NR_GENAGE.AchPer,
-			NatRate_GenderAge_Pass = NR_GENAGE.Pass,
-			NatRate_GenderAge_PassPer = NR_GENAGE.PassPer,
-			NatRate_Level_Leave = NR_LEV.Leave,
-			NatRate_Level_Comp = NR_LEV.Comp,
-			NatRate_Level_RetPer = NR_LEV.RetPer,
-			NatRate_Level_Ach = NR_LEV.Ach,
-			NatRate_Level_AchPer = NR_LEV.AchPer,
-			NatRate_Level_Pass = NR_LEV.Pass,
-			NatRate_Level_PassPer = NR_LEV.PassPer,
-            NatRate_LevelAge_Leave = NR_LEVAGE.Leave,
-			NatRate_LevelAge_Comp = NR_LEVAGE.Comp,
-			NatRate_LevelAge_RetPer = NR_LEVAGE.RetPer,
-			NatRate_LevelAge_Ach = NR_LEVAGE.Ach,
-			NatRate_LevelAge_AchPer = NR_LEVAGE.AchPer,
-			NatRate_LevelAge_Pass = NR_LEVAGE.Pass,
-			NatRate_LevelAge_PassPer = NR_LEVAGE.PassPer,
-            NatRate_LevelGrp_Leave = NR_LEVG.Leave,
-			NatRate_LevelGrp_Comp = NR_LEVG.Comp,
-			NatRate_LevelGrp_RetPer = NR_LEVG.RetPer,
-			NatRate_LevelGrp_Ach = NR_LEVG.Ach,
-			NatRate_LevelGrp_AchPer = NR_LEVG.AchPer,
-			NatRate_LevelGrp_Pass = NR_LEVG.Pass,
-			NatRate_LevelGrp_PassPer = NR_LEVG.PassPer,
-            NatRate_LevelGrpAge_Leave = NR_LEVGAGE.Leave,
-			NatRate_LevelGrpAge_Comp = NR_LEVGAGE.Comp,
-			NatRate_LevelGrpAge_RetPer = NR_LEVGAGE.RetPer,
-			NatRate_LevelGrpAge_Ach = NR_LEVGAGE.Ach,
-			NatRate_LevelGrpAge_AchPer = NR_LEVGAGE.AchPer,
-			NatRate_LevelGrpAge_Pass = NR_LEVGAGE.Pass,
-			NatRate_LevelGrpAge_PassPer = NR_LEVGAGE.PassPer,
-			NatRate_QualType_Leave = NR_QS.Leave,
-			NatRate_QualType_Comp = NR_QS.Comp,
-			NatRate_QualType_RetPer = NR_QS.RetPer,
-			NatRate_QualType_Ach = NR_QS.Ach,
-			NatRate_QualType_AchPer = NR_QS.AchPer,
-			NatRate_QualType_Pass = NR_QS.Pass,
-			NatRate_QualType_PassPer = NR_QS.PassPer,
-			NatRate_QualTypeAge_Leave = NR_QSAGE.Leave,
-			NatRate_QualTypeAge_Comp = NR_QSAGE.Comp,
-			NatRate_QualTypeAge_RetPer = NR_QSAGE.RetPer,
-			NatRate_QualTypeAge_Ach = NR_QSAGE.Ach,
-			NatRate_QualTypeAge_AchPer = NR_QSAGE.AchPer,
-			NatRate_QualTypeAge_Pass = NR_QSAGE.Pass,
-			NatRate_QualTypeAge_PassPer = NR_QSAGE.PassPer,
-			NatRate_Ethnicity_Leave = NR_ETH.Leave,
-			NatRate_Ethnicity_Comp = NR_ETH.Comp,
-			NatRate_Ethnicity_RetPer = NR_ETH.RetPer,
-			NatRate_Ethnicity_Ach = NR_ETH.Ach,
-			NatRate_Ethnicity_AchPer = NR_ETH.AchPer,
-			NatRate_Ethnicity_Pass = NR_ETH.Pass,
-			NatRate_Ethnicity_PassPer = NR_ETH.PassPer,
-            NatRate_EthnicityAge_Leave = NR_ETHAGE.Leave,
-			NatRate_EthnicityAge_Comp = NR_ETHAGE.Comp,
-			NatRate_EthnicityAge_RetPer = NR_ETHAGE.RetPer,
-			NatRate_EthnicityAge_Ach = NR_ETHAGE.Ach,
-			NatRate_EthnicityAge_AchPer = NR_ETHAGE.AchPer,
-			NatRate_EthnicityAge_Pass = NR_ETHAGE.Pass,
-			NatRate_EthnicityAge_PassPer = NR_ETHAGE.PassPer,
-			NatRate_EthnicGroup_Leave = NR_ETHG.Leave,
-			NatRate_EthnicGroup_Comp = NR_ETHG.Comp,
-			NatRate_EthnicGroup_RetPer = NR_ETHG.RetPer,
-			NatRate_EthnicGroup_Ach = NR_ETHG.Ach,
-			NatRate_EthnicGroup_AchPer = NR_ETHG.AchPer,
-			NatRate_EthnicGroup_Pass = NR_ETHG.Pass,
-			NatRate_EthnicGroup_PassPer = NR_ETHG.PassPer,
-            NatRate_EthnicGroupAge_Leave = NR_ETHGAGE.Leave,
-			NatRate_EthnicGroupAge_Comp = NR_ETHGAGE.Comp,
-			NatRate_EthnicGroupAge_RetPer = NR_ETHGAGE.RetPer,
-			NatRate_EthnicGroupAge_Ach = NR_ETHGAGE.Ach,
-			NatRate_EthnicGroupAge_AchPer = NR_ETHGAGE.AchPer,
-			NatRate_EthnicGroupAge_Pass = NR_ETHGAGE.Pass,
-			NatRate_EthnicGroupAge_PassPer = NR_ETHGAGE.PassPer,
-			NatRate_SSA1_Leave = NR_SSA1.Leave,
-			NatRate_SSA1_Comp = NR_SSA1.Comp,
-			NatRate_SSA1_RetPer = NR_SSA1.RetPer,
-			NatRate_SSA1_Ach = NR_SSA1.Ach,
-			NatRate_SSA1_AchPer = NR_SSA1.AchPer,
-			NatRate_SSA1_Pass = NR_SSA1.Pass,
-			NatRate_SSA1_PassPer = NR_SSA1.PassPer,
-			NatRate_SSA1Age_Leave = NR_SSA1AGE.Leave,
-			NatRate_SSA1Age_Comp = NR_SSA1AGE.Comp,
-			NatRate_SSA1Age_RetPer = NR_SSA1AGE.RetPer,
-			NatRate_SSA1Age_Ach = NR_SSA1AGE.Ach,
-			NatRate_SSA1Age_AchPer = NR_SSA1AGE.AchPer,
-			NatRate_SSA1Age_Pass = NR_SSA1AGE.Pass,
-			NatRate_SSA1Age_PassPer = NR_SSA1AGE.PassPer,
-			NatRate_SSA2_Leave = NR_SSA2.Leave,
-			NatRate_SSA2_Comp = NR_SSA2.Comp,
-			NatRate_SSA2_RetPer = NR_SSA2.RetPer,
-			NatRate_SSA2_Ach = NR_SSA2.Ach,
-			NatRate_SSA2_AchPer = NR_SSA2.AchPer,
-			NatRate_SSA2_Pass = NR_SSA2.Pass,
-			NatRate_SSA2_PassPer = NR_SSA2.PassPer,
-			NatRate_SSA2Age_Leave = NR_SSA2AGE.Leave,
-			NatRate_SSA2Age_Comp = NR_SSA2AGE.Comp,
-			NatRate_SSA2Age_RetPer = NR_SSA2AGE.RetPer,
-			NatRate_SSA2Age_Ach = NR_SSA2AGE.Ach,
-			NatRate_SSA2Age_AchPer = NR_SSA2AGE.AchPer,
-			NatRate_SSA2Age_Pass = NR_SSA2AGE.Pass,
-			NatRate_SSA2Age_PassPer = NR_SSA2AGE.PassPer,
-			NatRate_DifDis_Leave = NR_DIF.Leave,
-			NatRate_DifDis_Comp = NR_DIF.Comp,
-			NatRate_DifDis_RetPer = NR_DIF.RetPer,
-			NatRate_DifDis_Ach = NR_DIF.Ach,
-			NatRate_DifDis_AchPer = NR_DIF.AchPer,
-			NatRate_DifDis_Pass = NR_DIF.Pass,
-			NatRate_DifDis_PassPer = NR_DIF.PassPer,
-            NatRate_DifDisAge_Leave = NR_DIFAGE.Leave,
-			NatRate_DifDisAge_Comp = NR_DIFAGE.Comp,
-			NatRate_DifDisAge_RetPer = NR_DIFAGE.RetPer,
-			NatRate_DifDisAge_Ach = NR_DIFAGE.Ach,
-			NatRate_DifDisAge_AchPer = NR_DIFAGE.AchPer,
-			NatRate_DifDisAge_Pass = NR_DIFAGE.Pass,
-			NatRate_DifDisAge_PassPer = NR_DIFAGE.PassPer
+			NART_GFE_Overall_Leave = NRG_YR.Leave,
+			NART_GFE_Overall_RetPer = NRG_YR.RetPer,
+			NART_GFE_Overall_AchPer = NRG_YR.AchPer,
+			NART_GFE_Overall_PassPer = NRG_YR.PassPer,
+			NART_ALL_Overall_Leave = NRA_YR.Leave,
+			NART_ALL_Overall_RetPer = NRA_YR.RetPer,
+			NART_ALL_Overall_AchPer = NRA_YR.AchPer,
+			NART_ALL_Overall_PassPer = NRA_YR.PassPer,
+			NART_GFE_Aim_Leave = NRG_AIM.BM_Count_Timely,
+			NART_GFE_Aim_Comp = NULL,
+			NART_GFE_Aim_RetPer = NULL,
+			NART_GFE_Aim_Ach = ROUND ( ( CAST ( NRG_AIM.BM_Count_Timely AS FLOAT ) / 100 ) * NRG_AIM.BM_AchCount_Timely, 0 ),
+			NART_GFE_Aim_AchPer = NRG_AIM.BM_AchCount_Timely / 100,
+			NART_GFE_Aim_Pass = NULL,
+			NART_GFE_Aim_PassPer = NULL,
+			NART_GFE_Standard_Leave = NULL,
+			NART_GFE_Standard_RetPer = NULL,
+			NART_GFE_Standard_AchPer = NULL,
+			NART_GFE_Standard_PassPer = NULL,
+			NART_GFE_FrameworkProg_Leave = NULL,
+			NART_GFE_FrameworkProg_RetPer = NULL,
+			NART_GFE_FrameworkProg_AchPer = NULL,
+			NART_GFE_FrameworkProg_PassPer = NULL,
+			NART_GFE_Framework_Leave = NULL,
+			NART_GFE_Framework_RetPer = NULL,
+			NART_GFE_Framework_AchPer = NULL,
+			NART_GFE_Framework_PassPer = NULL,
+			NART_GFE_FworkPTSSA_Leave = NULL,
+			NART_GFE_FworkPTSSA_RetPer = NULL,
+			NART_GFE_FworkPTSSA_AchPer = NULL,
+			NART_GFE_FworkPTSSA_PassPer = NULL,
+			NART_GFE_Age_Leave = NRG_AGE.Leave,
+			NART_GFE_Age_RetPer = NRG_AGE.RetPer,
+			NART_GFE_Age_AchPer = NRG_AGE.AchPer,
+			NART_GFE_Age_PassPer = NRG_AGE.PassPer,
+			NART_GFE_Gender_Leave = NRG_GEN.Leave,
+			NART_GFE_Gender_RetPer = NRG_GEN.RetPer,
+			NART_GFE_Gender_AchPer = NRG_GEN.AchPer,
+			NART_GFE_Gender_PassPer = NRG_GEN.PassPer,
+			NART_GFE_GenderAge_Leave = NRG_GENAGE.Leave,
+			NART_GFE_GenderAge_RetPer = NRG_GENAGE.RetPer,
+			NART_GFE_GenderAge_AchPer = NRG_GENAGE.AchPer,
+			NART_GFE_GenderAge_PassPer = NRG_GENAGE.PassPer,
+			NART_GFE_Level_Leave = NRG_LEV.Leave,
+			NART_GFE_Level_RetPer = NRG_LEV.RetPer,
+			NART_GFE_Level_AchPer = NRG_LEV.AchPer,
+			NART_GFE_Level_PassPer = NRG_LEV.PassPer,
+            NART_GFE_LevelAge_Leave = NRG_LEVAGE.Leave,
+			NART_GFE_LevelAge_RetPer = NRG_LEVAGE.RetPer,
+			NART_GFE_LevelAge_AchPer = NRG_LEVAGE.AchPer,
+			NART_GFE_LevelAge_PassPer = NRG_LEVAGE.PassPer,
+            NART_GFE_LevelGrp_Leave = NRG_LEVG.Leave,
+			NART_GFE_LevelGrp_RetPer = NRG_LEVG.RetPer,
+			NART_GFE_LevelGrp_AchPer = NRG_LEVG.AchPer,
+			NART_GFE_LevelGrp_PassPer = NRG_LEVG.PassPer,
+            NART_GFE_LevelGrpAge_Leave = NRG_LEVGAGE.Leave,
+			NART_GFE_LevelGrpAge_RetPer = NRG_LEVGAGE.RetPer,
+			NART_GFE_LevelGrpAge_AchPer = NRG_LEVGAGE.AchPer,
+			NART_GFE_LevelGrpAge_PassPer = NRG_LEVGAGE.PassPer,
+			NART_GFE_QualType_Leave = NRG_QS.Leave,
+			NART_GFE_QualType_RetPer = NRG_QS.RetPer,
+			NART_GFE_QualType_AchPer = NRG_QS.AchPer,
+			NART_GFE_QualType_PassPer = NRG_QS.PassPer,
+			NART_GFE_QualTypeAge_Leave = NRG_QSAGE.Leave,
+			NART_GFE_QualTypeAge_RetPer = NRG_QSAGE.RetPer,
+			NART_GFE_QualTypeAge_AchPer = NRG_QSAGE.AchPer,
+			NART_GFE_QualTypeAge_PassPer = NRG_QSAGE.PassPer,
+			NART_GFE_Ethnicity_Leave = NRG_ETH.Leave,
+			NART_GFE_Ethnicity_RetPer = NRG_ETH.RetPer,
+			NART_GFE_Ethnicity_AchPer = NRG_ETH.AchPer,
+			NART_GFE_Ethnicity_PassPer = NRG_ETH.PassPer,
+            NART_GFE_EthnicityAge_Leave = NRG_ETHAGE.Leave,
+			NART_GFE_EthnicityAge_RetPer = NRG_ETHAGE.RetPer,
+			NART_GFE_EthnicityAge_AchPer = NRG_ETHAGE.AchPer,
+			NART_GFE_EthnicityAge_PassPer = NRG_ETHAGE.PassPer,
+			NART_GFE_EthnicGroup_Leave = NRG_ETHG.Leave,
+			NART_GFE_EthnicGroup_RetPer = NRG_ETHG.RetPer,
+			NART_GFE_EthnicGroup_AchPer = NRG_ETHG.AchPer,
+			NART_GFE_EthnicGroup_PassPer = NRG_ETHG.PassPer,
+            NART_GFE_EthnicGroupAge_Leave = NRG_ETHGAGE.Leave,
+			NART_GFE_EthnicGroupAge_RetPer = NRG_ETHGAGE.RetPer,
+			NART_GFE_EthnicGroupAge_AchPer = NRG_ETHGAGE.AchPer,
+			NART_GFE_EthnicGroupAge_PassPer = NRG_ETHGAGE.PassPer,
+			NART_GFE_SSA1_Leave = NRG_SSA1.Leave,
+			NART_GFE_SSA1_RetPer = NRG_SSA1.RetPer,
+			NART_GFE_SSA1_AchPer = NRG_SSA1.AchPer,
+			NART_GFE_SSA1_PassPer = NRG_SSA1.PassPer,
+			NART_GFE_SSA1Age_Leave = NRG_SSA1AGE.Leave,
+			NART_GFE_SSA1Age_RetPer = NRG_SSA1AGE.RetPer,
+			NART_GFE_SSA1Age_AchPer = NRG_SSA1AGE.AchPer,
+			NART_GFE_SSA1Age_PassPer = NRG_SSA1AGE.PassPer,
+			NART_GFE_SSA2_Leave = NRG_SSA2.Leave,
+			NART_GFE_SSA2_RetPer = NRG_SSA2.RetPer,
+			NART_GFE_SSA2_AchPer = NRG_SSA2.AchPer,
+			NART_GFE_SSA2_PassPer = NRG_SSA2.PassPer,
+			NART_GFE_SSA2Age_Leave = NRG_SSA2AGE.Leave,
+			NART_GFE_SSA2Age_RetPer = NRG_SSA2AGE.RetPer,
+			NART_GFE_SSA2Age_AchPer = NRG_SSA2AGE.AchPer,
+			NART_GFE_SSA2Age_PassPer = NRG_SSA2AGE.PassPer,
+			NART_GFE_DifDis_Leave = NRG_DIF.Leave,
+			NART_GFE_DifDis_RetPer = NRG_DIF.RetPer,
+			NART_GFE_DifDis_AchPer = NRG_DIF.AchPer,
+			NART_GFE_DifDis_PassPer = NRG_DIF.PassPer,
+            NART_GFE_DifDisAge_Leave = NRG_DIFAGE.Leave,
+			NART_GFE_DifDisAge_RetPer = NRG_DIFAGE.RetPer,
+			NART_GFE_DifDisAge_AchPer = NRG_DIFAGE.AchPer,
+			NART_GFE_DifDisAge_PassPer = NRG_DIFAGE.PassPer
 	'
 
     SET @SQLString += 
@@ -745,16 +660,13 @@ BEGIN
 			SELECT
 				NR.PG_ExpEndYrID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -763,22 +675,19 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_YR
-			ON NR_YR.PG_ExpEndYrID = @NatRateYear
+		) NRG_YR
+			ON NRG_YR.PG_ExpEndYrID = @NatRateYear
 		LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = 0
+				AND NR.PG_CollegeTypeID = 0 --ALL
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -787,38 +696,14 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_YRA
-			ON NR_YRA.PG_ExpEndYrID = @NatRateYear
-		LEFT JOIN (
-			SELECT
-				NR.PG_ExpEndYrID,
-				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
-				RetPer = NULL,
-				AchPer = NR.BM_AchCount_Timely / 100,
-				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
-			WHERE
-				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = 2
-				AND NR.PG_AgeLSCID IS NULL
-				AND NR.PG_NVQLevelGroupID IS NULL
-				AND NR.PG_QualSizeID IS NULL
-				AND NR.PG_SSA1ID IS NULL
-				AND NR.PG_SSA2ID IS NULL
-				AND NR.PG_SexID IS NULL
-				AND NR.PG_EthnicityID IS NULL
-				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_YRG
-			ON NR_YRG.PG_ExpEndYrID = @NatRateYear
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_Qual_Timely NR_AIM
-			ON NR_AIM.PG_ExpEndYrID = @NatRateYear
-			AND NR_AIM.PG_CollegeTypeID = @CollegeType
-			AND NR_AIM.PG_AimID = CL.PG_AimID
-			AND NR_AIM.PG_MapID IS NULL
-			AND NR_AIM.PG_AgeLSCID IS NULL
+		) NRA_YR
+			ON NRA_YR.PG_ExpEndYrID = @NatRateYear
+		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_Qual_Timely NRG_AIM
+			ON NRG_AIM.PG_ExpEndYrID = @NatRateYear
+			AND NRG_AIM.PG_CollegeTypeID = 2 --GFE
+			AND NRG_AIM.PG_AimID = CL.PG_AimID
+			AND NRG_AIM.PG_MapID IS NULL
+			AND NRG_AIM.PG_AgeLSCID IS NULL
     '
 
     SET @SQLString += 
@@ -828,16 +713,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_QualSizeID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NOT NULL
@@ -846,25 +728,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_QS
-			ON NR_QS.PG_ExpEndYrID = @NatRateYear
-			AND NR_QS.PG_QualSizeID = CL.PG_QualSizeID
+		) NRG_QS
+			ON NRG_QS.PG_ExpEndYrID = @NatRateYear
+			AND NRG_QS.PG_QualSizeID = CL.PG_QualSizeID
 		LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_QualSizeID,
 				NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NOT NULL
@@ -873,10 +752,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_QSAGE
-			ON NR_QSAGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_QSAGE.PG_QualSizeID = CL.PG_QualSizeID
-			AND NR_QSAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_QSAGE
+			ON NRG_QSAGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_QSAGE.PG_QualSizeID = CL.PG_QualSizeID
+			AND NRG_QSAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
     SET @SQLString += 
@@ -886,16 +765,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -904,24 +780,21 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_AGE
-			ON NR_AGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_AGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_AGE
+			ON NRG_AGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_AGE.PG_AgeLSCID = CL.PG_AgeLSCID
 		LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_SexID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -930,25 +803,22 @@ BEGIN
 				AND NR.PG_SexID IS NOT NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_GEN
-			ON NR_GEN.PG_ExpEndYrID = @NatRateYear
-			AND NR_GEN.PG_SexID = CL.PG_SexID
+		) NRG_GEN
+			ON NRG_GEN.PG_ExpEndYrID = @NatRateYear
+			AND NRG_GEN.PG_SexID = CL.PG_SexID
 		LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_AgeLSCID,
 				NR.PG_SexID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -957,10 +827,10 @@ BEGIN
 				AND NR.PG_SexID IS NOT NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_GENAGE
-			ON NR_GENAGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_GENAGE.PG_AgeLSCID = CL.PG_AgeLSCID
-			AND NR_GENAGE.PG_SexID = CL.PG_SexID
+		) NRG_GENAGE
+			ON NRG_GENAGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_GENAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+			AND NRG_GENAGE.PG_SexID = CL.PG_SexID
     '
 
     SET @SQLString += 
@@ -970,16 +840,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				PG_NVQLevelCPRID = NULL,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -988,25 +855,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_LEV
-			ON NR_LEV.PG_ExpEndYrID = @NatRateYear
-			AND NR_LEV.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
+		) NRG_LEV
+			ON NRG_LEV.PG_ExpEndYrID = @NatRateYear
+			AND NRG_LEV.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
         LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				PG_NVQLevelCPRID = NULL,
                 NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1015,10 +879,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_LEVAGE
-			ON NR_LEVAGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_LEVAGE.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
-            AND NR_LEVAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_LEVAGE
+			ON NRG_LEVAGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_LEVAGE.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
+            AND NRG_LEVAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
     SET @SQLString += 
@@ -1028,16 +892,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NOT NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1046,25 +907,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_LEVG
-			ON NR_LEVG.PG_ExpEndYrID = @NatRateYear
-			AND NR_LEVG.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
+		) NRG_LEVG
+			ON NRG_LEVG.PG_ExpEndYrID = @NatRateYear
+			AND NRG_LEVG.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
         LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_NVQLevelGroupID,
                 NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NOT NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1073,10 +931,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_LEVGAGE
-			ON NR_LEVGAGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_LEVGAGE.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
-            AND NR_LEVGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_LEVGAGE
+			ON NRG_LEVGAGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_LEVGAGE.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
+            AND NRG_LEVGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
     '
 
     SET @SQLString += 
@@ -1086,16 +944,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_EthnicityID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1104,25 +959,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NOT NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_ETH
-			ON NR_ETH.PG_ExpEndYrID = @NatRateYear
-			AND NR_ETH.PG_EthnicityID = CL.PG_EthnicityID
+		) NRG_ETH
+			ON NRG_ETH.PG_ExpEndYrID = @NatRateYear
+			AND NRG_ETH.PG_EthnicityID = CL.PG_EthnicityID
         LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_EthnicityID,
                 NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1131,10 +983,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NOT NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_ETHAGE
-			ON NR_ETHAGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_ETHAGE.PG_EthnicityID = CL.PG_EthnicityID
-            AND NR_ETHAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_ETHAGE
+			ON NRG_ETHAGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_ETHAGE.PG_EthnicityID = CL.PG_EthnicityID
+            AND NRG_ETHAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
 	SET @SQLString += 
@@ -1144,16 +996,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				PG_EthnicGroupID = NULL,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1162,25 +1011,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_ETHG
-			ON NR_ETHG.PG_ExpEndYrID = @NatRateYear
-			AND NR_ETHG.PG_EthnicGroupID = CL.PG_EthnicGroupID
+		) NRG_ETHG
+			ON NRG_ETHG.PG_ExpEndYrID = @NatRateYear
+			AND NRG_ETHG.PG_EthnicGroupID = CL.PG_EthnicGroupID
         LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				PG_EthnicGroupID = NULL,
                 NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1189,10 +1035,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_ETHGAGE
-			ON NR_ETHGAGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_ETHGAGE.PG_EthnicGroupID = CL.PG_EthnicGroupID
-            AND NR_ETHGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_ETHGAGE
+			ON NRG_ETHGAGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_ETHGAGE.PG_EthnicGroupID = CL.PG_EthnicGroupID
+            AND NRG_ETHGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
     SET @SQLString += 
@@ -1202,16 +1048,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_SSA1ID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1220,25 +1063,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_SSA1
-			ON NR_SSA1.PG_ExpEndYrID = @NatRateYear
-			AND NR_SSA1.PG_SSA1ID = CL.PG_SSA1ID
+		) NRG_SSA1
+			ON NRG_SSA1.PG_ExpEndYrID = @NatRateYear
+			AND NRG_SSA1.PG_SSA1ID = CL.PG_SSA1ID
 		LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_SSA1ID,
 				NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1247,10 +1087,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_SSA1AGE
-			ON NR_SSA1AGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_SSA1AGE.PG_SSA1ID = CL.PG_SSA1ID
-			AND NR_SSA1AGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_SSA1AGE
+			ON NRG_SSA1AGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_SSA1AGE.PG_SSA1ID = CL.PG_SSA1ID
+			AND NRG_SSA1AGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
     SET @SQLString += 
@@ -1260,16 +1100,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_SSA2ID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1278,25 +1115,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_SSA2
-			ON NR_SSA2.PG_ExpEndYrID = @NatRateYear
-			AND NR_SSA2.PG_SSA2ID = CL.PG_SSA2ID
+		) NRG_SSA2
+			ON NRG_SSA2.PG_ExpEndYrID = @NatRateYear
+			AND NRG_SSA2.PG_SSA2ID = CL.PG_SSA2ID
 		LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_SSA2ID,
 				NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1305,10 +1139,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NULL
-		) NR_SSA2AGE
-			ON NR_SSA2AGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_SSA2AGE.PG_SSA2ID = CL.PG_SSA2ID
-			AND NR_SSA2AGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_SSA2AGE
+			ON NRG_SSA2AGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_SSA2AGE.PG_SSA2ID = CL.PG_SSA2ID
+			AND NRG_SSA2AGE.PG_AgeLSCID = CL.PG_AgeLSCID
     '
 
     SET @SQLString += 
@@ -1318,16 +1152,13 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_DifficultyOrDisabilityID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1336,25 +1167,22 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NOT NULL
-		) NR_DIF
-			ON NR_DIF.PG_ExpEndYrID = @NatRateYear
-			AND NR_DIF.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
+		) NRG_DIF
+			ON NRG_DIF.PG_ExpEndYrID = @NatRateYear
+			AND NRG_DIF.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
         LEFT JOIN (
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_DifficultyOrDisabilityID,
                 NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Timely / 100,
-				Comp = NULL,
-				Ach = NULL,
-				Pass = NULL,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
 			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
-				AND NR.PG_CollegeTypeID = @CollegeType
+				AND NR.PG_CollegeTypeID = 2 --GFE
 				AND NR.PG_AgeLSCID IS NOT NULL
 				AND NR.PG_NVQLevelGroupID IS NULL
 				AND NR.PG_QualSizeID IS NULL
@@ -1363,10 +1191,10 @@ BEGIN
 				AND NR.PG_SexID IS NULL
 				AND NR.PG_EthnicityID IS NULL
 				AND NR.PG_DifficultyOrDisabilityID IS NOT NULL
-		) NR_DIFAGE
-			ON NR_DIFAGE.PG_ExpEndYrID = @NatRateYear
-			AND NR_DIFAGE.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
-            AND NR_DIFAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		) NRG_DIFAGE
+			ON NRG_DIFAGE.PG_ExpEndYrID = @NatRateYear
+			AND NRG_DIFAGE.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
+            AND NRG_DIFAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 
 		WHERE 
 			CL.PG_ExpEndYrID = @AcademicYear
@@ -1378,7 +1206,6 @@ BEGIN
 	SET @SQLParams = 
         N'@ProviderRef NVARCHAR(50),
 		@AcademicYear NVARCHAR(5),
-	    @CollegeType INT,
 		@OutputTableLocation NVARCHAR(200),
 		@UserDefinedTrueValue NVARCHAR(50),
 		@ALSStudentUserDefinedField INT,
@@ -1393,7 +1220,6 @@ BEGIN
         @SQLParams, 
 		@ProviderRef = @ProviderRef,
         @AcademicYear = @AcademicYear, 
-        @CollegeType = @CollegeType,
 		@OutputTableLocation = @OutputTableLocation,
 		@UserDefinedTrueValue = @UserDefinedTrueValue,
 		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,

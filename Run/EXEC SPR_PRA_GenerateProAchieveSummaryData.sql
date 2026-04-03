@@ -1,11 +1,10 @@
 DECLARE @ProviderID INT = 10005077 --Provider Ref of the college
-DECLARE @ProviderRef NVARCHAR(50) = 'IEG' --Reference to save into table in case title too long for charts etc.
+DECLARE @ProviderRef NVARCHAR(50) = 'Derwentside' --Reference to save into table in case title too long for charts etc.
 DECLARE @AcademicYear NVARCHAR(5) = ''
 
 SET @AcademicYear = (SELECT CFG.Value FROM Config CFG WHERE CFG.ConfigID = 'PRA_AcademicYearID')
-SET @AcademicYear = '22/23' --Override
-DECLARE @CollegeType INT = 2 --Type of national averages - 2=GFE, 0=All Institutions
-DECLARE @Mode CHAR(1) = 'R' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
+SET @AcademicYear = '25/26' --Override
+DECLARE @Mode CHAR(1) = 'I' --I=Insert new yearly ProAchieve data leaving data for other years, R=Replace table
 DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'ProGeneral.dbo.' --Database/Linked Server location
 DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'ProAchieve.dbo.' --Database/Linked Server location
 DECLARE @OutputTableLocation NVARCHAR(200) = 'ProAchieveDataSummariser.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
@@ -23,12 +22,13 @@ DECLARE @ErrorCode INT
 DECLARE @SQLString NVARCHAR(MAX);
 DECLARE @SQLParams NVARCHAR(MAX);
 
+DECLARE @Message VARCHAR(MAX);
+
 SET @SQLString = N'
     EXEC SPR_PRA_GenerateProAchieveSummaryData
         @ProviderID,
 		@ProviderRef,
 		@AcademicYear,
-        @CollegeType,
         @Mode,
         @ProGeneralDatabaseLocation,
         @ProAchieveDatabaseLocation,
@@ -47,7 +47,6 @@ SET @SQLParams =
         N'@ProviderID INT,
 		@ProviderRef NVARCHAR(50),
 		@AcademicYear NVARCHAR(5),
-        @CollegeType INT,
         @Mode CHAR(1),
         @ProGeneralDatabaseLocation NVARCHAR(200),
         @ProAchieveDatabaseLocation NVARCHAR(200),
@@ -67,8 +66,7 @@ EXECUTE sp_executesql
     @SQLParams, 
     @ProviderID = @ProviderID,
 	@ProviderRef = @ProviderRef,
-	@AcademicYear = @AcademicYear, 
-    @CollegeType = @CollegeType, 
+	@AcademicYear = @AcademicYear,  
     @Mode = @Mode,
     @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
     @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
@@ -84,6 +82,12 @@ EXECUTE sp_executesql
 	@ErrorCode = @ErrorCode OUTPUT
 
 IF(@ErrorCode > 0)
-    PRINT N'Errors Occurred - Code: ' + CAST ( @ErrorCode AS NVARCHAR(10) )
+	BEGIN
+		SET @Message = N'Errors Occurred - Code: ' + CAST ( @ErrorCode AS NVARCHAR(10) )
+		RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
+	END
 ELSE
-    PRINT N'Records Inserted: ' + CAST ( @NumRowsChanged AS NVARCHAR(10) )
+	BEGIN
+		SET @Message = N'Records Inserted: ' + CAST ( @NumRowsChanged AS NVARCHAR(10) )
+		RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
+	END
