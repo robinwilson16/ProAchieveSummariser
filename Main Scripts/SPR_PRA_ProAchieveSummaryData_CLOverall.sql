@@ -292,8 +292,8 @@ BEGIN
     
     SET @SQLString += 
         N'
-			LearningAimCode = AIM.GN_AimID,
-			LearningAimTitle = AIM.GN_AimName,
+			LearnAimRef = AIM.GN_AimID,
+			LearnAimTitle = AIM.GN_AimName,
 			LearningAimTypeCode = CL.PG_QType1ID,
 			LearningAimTypeName = QT.PG_LearningAimTypeName,
 			QualificationTypeCode = CL.PG_QualSizeID,

@@ -199,8 +199,8 @@ BEGIN
 
 			SET @SQLString += 
 				N'
-					LearningAimCode VARCHAR(8) NULL,
-					LearningAimTitle VARCHAR(254) NULL,
+					LearnAimRef VARCHAR(8) NULL,
+					LearnAimTitle VARCHAR(254) NULL,
 					LearningAimTypeCode CHAR(4) NULL,
 					LearningAimTypeName VARCHAR(150) NULL,
 					QualificationTypeCode VARCHAR(4) NULL,
