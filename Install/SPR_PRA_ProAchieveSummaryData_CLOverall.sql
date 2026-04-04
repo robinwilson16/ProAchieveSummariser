@@ -477,6 +477,7 @@ BEGIN
 			NART_ALL_Overall_RetPer = NRA_YR.RetPer,
 			NART_ALL_Overall_AchPer = NRA_YR.AchPer,
 			NART_ALL_Overall_PassPer = NRA_YR.PassPer,
+
 			NART_GFE_Aim_Leave = NRG_AIM.BM_Count_Overall,
 			NART_GFE_Aim_Comp = ROUND ( ( CAST ( NRG_AIM.BM_Count_Overall AS FLOAT ) / 100 ) * NRG_AIM.BM_RetCount_Overall, 0 ),
 			NART_GFE_Aim_RetPer = NRG_AIM.BM_RetCount_Overall / 100,
@@ -484,98 +485,229 @@ BEGIN
 			NART_GFE_Aim_AchPer = NRG_AIM.BM_AchCount_Overall / 100,
 			NART_GFE_Aim_Pass = ROUND ( ( CAST ( NRG_AIM.BM_Count_Overall AS FLOAT ) / 100 ) * NRG_AIM.BM_AchComplete_Overall, 0 ),
 			NART_GFE_Aim_PassPer = NRG_AIM.BM_AchComplete_Overall / 100,
+			NART_ALL_Aim_Leave = NRA_AIM.BM_Count_Overall,
+			NART_ALL_Aim_Comp = ROUND ( ( CAST ( NRA_AIM.BM_Count_Overall AS FLOAT ) / 100 ) * NRA_AIM.BM_RetCount_Overall, 0 ),
+			NART_ALL_Aim_RetPer = NRA_AIM.BM_RetCount_Overall / 100,
+			NART_ALL_Aim_Ach = ROUND ( ( CAST ( NRA_AIM.BM_Count_Overall AS FLOAT ) / 100 ) * NRA_AIM.BM_AchCount_Overall, 0 ),
+			NART_ALL_Aim_AchPer = NRA_AIM.BM_AchCount_Overall / 100,
+			NART_ALL_Aim_Pass = ROUND ( ( CAST ( NRA_AIM.BM_Count_Overall AS FLOAT ) / 100 ) * NRA_AIM.BM_AchComplete_Overall, 0 ),
+			NART_ALL_Aim_PassPer = NRA_AIM.BM_AchComplete_Overall / 100,
+
 			NART_GFE_Standard_Leave = NULL,
 			NART_GFE_Standard_RetPer = NULL,
 			NART_GFE_Standard_AchPer = NULL,
 			NART_GFE_Standard_PassPer = NULL,
-			NART_GFE_FrameworkProg_Leave = NULL,
-			NART_GFE_FrameworkProg_RetPer = NULL,
-			NART_GFE_FrameworkProg_AchPer = NULL,
-			NART_GFE_FrameworkProg_PassPer = NULL,
+			NART_ALL_Standard_Leave = NULL,
+			NART_ALL_Standard_RetPer = NULL,
+			NART_ALL_Standard_AchPer = NULL,
+			NART_ALL_Standard_PassPer = NULL,
+
 			NART_GFE_Framework_Leave = NULL,
 			NART_GFE_Framework_RetPer = NULL,
 			NART_GFE_Framework_AchPer = NULL,
 			NART_GFE_Framework_PassPer = NULL,
-			NART_GFE_FworkPTSSA_Leave = NULL,
-			NART_GFE_FworkPTSSA_RetPer = NULL,
-			NART_GFE_FworkPTSSA_AchPer = NULL,
-			NART_GFE_FworkPTSSA_PassPer = NULL,
+			NART_ALL_Framework_Leave = NULL,
+			NART_ALL_Framework_RetPer = NULL,
+			NART_ALL_Framework_AchPer = NULL,
+			NART_ALL_Framework_PassPer = NULL,
+
+			NART_GFE_FrameworkProgType_Leave = NULL,
+			NART_GFE_FrameworkProgType_RetPer = NULL,
+			NART_GFE_FrameworkProgType_AchPer = NULL,
+			NART_GFE_FrameworkProgType_PassPer = NULL,
+			NART_ALL_FrameworkProgType_Leave = NULL,
+			NART_ALL_FrameworkProgType_RetPer = NULL,
+			NART_ALL_FrameworkProgType_AchPer = NULL,
+			NART_ALL_FrameworkProgType_PassPer = NULL,
+
+			NART_GFE_FrameworkProgTypeSSA_Leave = NULL,
+			NART_GFE_FrameworkProgTypeSSA_RetPer = NULL,
+			NART_GFE_FrameworkProgTypeSSA_AchPer = NULL,
+			NART_GFE_FrameworkProgTypeSSA_PassPer = NULL,
+			NART_ALL_FrameworkProgTypeSSA_Leave = NULL,
+			NART_ALL_FrameworkProgTypeSSA_RetPer = NULL,
+			NART_ALL_FrameworkProgTypeSSA_AchPer = NULL,
+			NART_ALL_FrameworkProgTypeSSA_PassPer = NULL,
+	'
+
+	SET @SQLString += 
+		N'
 			NART_GFE_Age_Leave = NRG_AGE.Leave,
 			NART_GFE_Age_RetPer = NRG_AGE.RetPer,
 			NART_GFE_Age_AchPer = NRG_AGE.AchPer,
 			NART_GFE_Age_PassPer = NRG_AGE.PassPer,
-			NART_GFE_Gender_Leave = NRG_GEN.Leave,
-			NART_GFE_Gender_RetPer = NRG_GEN.RetPer,
-			NART_GFE_Gender_AchPer = NRG_GEN.AchPer,
-			NART_GFE_Gender_PassPer = NRG_GEN.PassPer,
-			NART_GFE_GenderAge_Leave = NRG_GENAGE.Leave,
-			NART_GFE_GenderAge_RetPer = NRG_GENAGE.RetPer,
-			NART_GFE_GenderAge_AchPer = NRG_GENAGE.AchPer,
-			NART_GFE_GenderAge_PassPer = NRG_GENAGE.PassPer,
+			NART_ALL_Age_Leave = NRA_AGE.Leave,
+			NART_ALL_Age_RetPer = NRA_AGE.RetPer,
+			NART_ALL_Age_AchPer = NRA_AGE.AchPer,
+			NART_ALL_Age_PassPer = NRA_AGE.PassPer,
+
+			NART_GFE_Sex_Leave = NRG_GEN.Leave,
+			NART_GFE_Sex_RetPer = NRG_GEN.RetPer,
+			NART_GFE_Sex_AchPer = NRG_GEN.AchPer,
+			NART_GFE_Sex_PassPer = NRG_GEN.PassPer,
+			NART_ALL_Sex_Leave = NRA_GEN.Leave,
+			NART_ALL_Sex_RetPer = NRA_GEN.RetPer,
+			NART_ALL_Sex_AchPer = NRA_GEN.AchPer,
+			NART_ALL_Sex_PassPer = NRA_GEN.PassPer,
+
+			NART_GFE_SexAge_Leave = NRG_GENAGE.Leave,
+			NART_GFE_SexAge_RetPer = NRG_GENAGE.RetPer,
+			NART_GFE_SexAge_AchPer = NRG_GENAGE.AchPer,
+			NART_GFE_SexAge_PassPer = NRG_GENAGE.PassPer,
+			NART_ALL_SexAge_Leave = NRA_GENAGE.Leave,
+			NART_ALL_SexAge_RetPer = NRA_GENAGE.RetPer,
+			NART_ALL_SexAge_AchPer = NRA_GENAGE.AchPer,
+			NART_ALL_SexAge_PassPer = NRA_GENAGE.PassPer,
+
 			NART_GFE_Level_Leave = NRG_LEV.Leave,
 			NART_GFE_Level_RetPer = NRG_LEV.RetPer,
 			NART_GFE_Level_AchPer = NRG_LEV.AchPer,
 			NART_GFE_Level_PassPer = NRG_LEV.PassPer,
+			NART_ALL_Level_Leave = NRA_LEV.Leave,
+			NART_ALL_Level_RetPer = NRA_LEV.RetPer,
+			NART_ALL_Level_AchPer = NRA_LEV.AchPer,
+			NART_ALL_Level_PassPer = NRA_LEV.PassPer,
+
             NART_GFE_LevelAge_Leave = NRG_LEVAGE.Leave,
 			NART_GFE_LevelAge_RetPer = NRG_LEVAGE.RetPer,
 			NART_GFE_LevelAge_AchPer = NRG_LEVAGE.AchPer,
 			NART_GFE_LevelAge_PassPer = NRG_LEVAGE.PassPer,
-            NART_GFE_LevelGrp_Leave = NRG_LEVG.Leave,
-			NART_GFE_LevelGrp_RetPer = NRG_LEVG.RetPer,
-			NART_GFE_LevelGrp_AchPer = NRG_LEVG.AchPer,
-			NART_GFE_LevelGrp_PassPer = NRG_LEVG.PassPer,
-            NART_GFE_LevelGrpAge_Leave = NRG_LEVGAGE.Leave,
-			NART_GFE_LevelGrpAge_RetPer = NRG_LEVGAGE.RetPer,
-			NART_GFE_LevelGrpAge_AchPer = NRG_LEVGAGE.AchPer,
-			NART_GFE_LevelGrpAge_PassPer = NRG_LEVGAGE.PassPer,
+			NART_ALL_LevelAge_Leave = NRA_LEVAGE.Leave,
+			NART_ALL_LevelAge_RetPer = NRA_LEVAGE.RetPer,
+			NART_ALL_LevelAge_AchPer = NRA_LEVAGE.AchPer,
+			NART_ALL_LevelAge_PassPer = NRA_LEVAGE.PassPer,
+
+            NART_GFE_LevelGroup_Leave = NRG_LEVG.Leave,
+			NART_GFE_LevelGroup_RetPer = NRG_LEVG.RetPer,
+			NART_GFE_LevelGroup_AchPer = NRG_LEVG.AchPer,
+			NART_GFE_LevelGroup_PassPer = NRG_LEVG.PassPer,
+			NART_ALL_LevelGroup_Leave = NRA_LEVG.Leave,
+			NART_ALL_LevelGroup_RetPer = NRA_LEVG.RetPer,
+			NART_ALL_LevelGroup_AchPer = NRA_LEVG.AchPer,
+			NART_ALL_LevelGroup_PassPer = NRA_LEVG.PassPer,
+
+            NART_GFE_LevelGroupAge_Leave = NRG_LEVGAGE.Leave,
+			NART_GFE_LevelGroupAge_RetPer = NRG_LEVGAGE.RetPer,
+			NART_GFE_LevelGroupAge_AchPer = NRG_LEVGAGE.AchPer,
+			NART_GFE_LevelGroupAge_PassPer = NRG_LEVGAGE.PassPer,
+			NART_ALL_LevelGroupAge_Leave = NRA_LEVGAGE.Leave,
+			NART_ALL_LevelGroupAge_RetPer = NRA_LEVGAGE.RetPer,
+			NART_ALL_LevelGroupAge_AchPer = NRA_LEVGAGE.AchPer,
+			NART_ALL_LevelGroupAge_PassPer = NRA_LEVGAGE.PassPer,
+	'
+
+	SET @SQLString += 
+		N'
 			NART_GFE_QualType_Leave = NRG_QS.Leave,
 			NART_GFE_QualType_RetPer = NRG_QS.RetPer,
 			NART_GFE_QualType_AchPer = NRG_QS.AchPer,
 			NART_GFE_QualType_PassPer = NRG_QS.PassPer,
+			NART_ALL_QualType_Leave = NRA_QS.Leave,
+			NART_ALL_QualType_RetPer = NRA_QS.RetPer,
+			NART_ALL_QualType_AchPer = NRA_QS.AchPer,
+			NART_ALL_QualType_PassPer = NRA_QS.PassPer,
+
 			NART_GFE_QualTypeAge_Leave = NRG_QSAGE.Leave,
 			NART_GFE_QualTypeAge_RetPer = NRG_QSAGE.RetPer,
 			NART_GFE_QualTypeAge_AchPer = NRG_QSAGE.AchPer,
 			NART_GFE_QualTypeAge_PassPer = NRG_QSAGE.PassPer,
+			NART_ALL_QualTypeAge_Leave = NRA_QSAGE.Leave,
+			NART_ALL_QualTypeAge_RetPer = NRA_QSAGE.RetPer,
+			NART_ALL_QualTypeAge_AchPer = NRA_QSAGE.AchPer,
+			NART_ALL_QualTypeAge_PassPer = NRA_QSAGE.PassPer,
+
 			NART_GFE_Ethnicity_Leave = NRG_ETH.Leave,
 			NART_GFE_Ethnicity_RetPer = NRG_ETH.RetPer,
 			NART_GFE_Ethnicity_AchPer = NRG_ETH.AchPer,
 			NART_GFE_Ethnicity_PassPer = NRG_ETH.PassPer,
+			NART_ALL_Ethnicity_Leave = NRA_ETH.Leave,
+			NART_ALL_Ethnicity_RetPer = NRA_ETH.RetPer,
+			NART_ALL_Ethnicity_AchPer = NRA_ETH.AchPer,
+			NART_ALL_Ethnicity_PassPer = NRA_ETH.PassPer,
+
             NART_GFE_EthnicityAge_Leave = NRG_ETHAGE.Leave,
 			NART_GFE_EthnicityAge_RetPer = NRG_ETHAGE.RetPer,
 			NART_GFE_EthnicityAge_AchPer = NRG_ETHAGE.AchPer,
 			NART_GFE_EthnicityAge_PassPer = NRG_ETHAGE.PassPer,
+			NART_ALL_EthnicityAge_Leave = NRA_ETHAGE.Leave,
+			NART_ALL_EthnicityAge_RetPer = NRA_ETHAGE.RetPer,
+			NART_ALL_EthnicityAge_AchPer = NRA_ETHAGE.AchPer,
+			NART_ALL_EthnicityAge_PassPer = NRA_ETHAGE.PassPer,
+
 			NART_GFE_EthnicGroup_Leave = NRG_ETHG.Leave,
 			NART_GFE_EthnicGroup_RetPer = NRG_ETHG.RetPer,
 			NART_GFE_EthnicGroup_AchPer = NRG_ETHG.AchPer,
 			NART_GFE_EthnicGroup_PassPer = NRG_ETHG.PassPer,
+			NART_ALL_EthnicGroup_Leave = NRA_ETHG.Leave,
+			NART_ALL_EthnicGroup_RetPer = NRA_ETHG.RetPer,
+			NART_ALL_EthnicGroup_AchPer = NRA_ETHG.AchPer,
+			NART_ALL_EthnicGroup_PassPer = NRA_ETHG.PassPer,
+
             NART_GFE_EthnicGroupAge_Leave = NRG_ETHGAGE.Leave,
 			NART_GFE_EthnicGroupAge_RetPer = NRG_ETHGAGE.RetPer,
 			NART_GFE_EthnicGroupAge_AchPer = NRG_ETHGAGE.AchPer,
 			NART_GFE_EthnicGroupAge_PassPer = NRG_ETHGAGE.PassPer,
+			NART_ALL_EthnicGroupAge_Leave = NRA_ETHGAGE.Leave,
+			NART_ALL_EthnicGroupAge_RetPer = NRA_ETHGAGE.RetPer,
+			NART_ALL_EthnicGroupAge_AchPer = NRA_ETHGAGE.AchPer,
+			NART_ALL_EthnicGroupAge_PassPer = NRA_ETHGAGE.PassPer,
+	'
+
+	SET @SQLString += 
+		N'
 			NART_GFE_SSA1_Leave = NRG_SSA1.Leave,
 			NART_GFE_SSA1_RetPer = NRG_SSA1.RetPer,
 			NART_GFE_SSA1_AchPer = NRG_SSA1.AchPer,
 			NART_GFE_SSA1_PassPer = NRG_SSA1.PassPer,
+			NART_ALL_SSA1_Leave = NRA_SSA1.Leave,
+			NART_ALL_SSA1_RetPer = NRA_SSA1.RetPer,
+			NART_ALL_SSA1_AchPer = NRA_SSA1.AchPer,
+			NART_ALL_SSA1_PassPer = NRA_SSA1.PassPer,
+
 			NART_GFE_SSA1Age_Leave = NRG_SSA1AGE.Leave,
 			NART_GFE_SSA1Age_RetPer = NRG_SSA1AGE.RetPer,
 			NART_GFE_SSA1Age_AchPer = NRG_SSA1AGE.AchPer,
 			NART_GFE_SSA1Age_PassPer = NRG_SSA1AGE.PassPer,
+			NART_ALL_SSA1Age_Leave = NRA_SSA1AGE.Leave,
+			NART_ALL_SSA1Age_RetPer = NRA_SSA1AGE.RetPer,
+			NART_ALL_SSA1Age_AchPer = NRA_SSA1AGE.AchPer,
+			NART_ALL_SSA1Age_PassPer = NRA_SSA1AGE.PassPer,
+
 			NART_GFE_SSA2_Leave = NRG_SSA2.Leave,
 			NART_GFE_SSA2_RetPer = NRG_SSA2.RetPer,
 			NART_GFE_SSA2_AchPer = NRG_SSA2.AchPer,
 			NART_GFE_SSA2_PassPer = NRG_SSA2.PassPer,
+			NART_ALL_SSA2_Leave = NRA_SSA2.Leave,
+			NART_ALL_SSA2_RetPer = NRA_SSA2.RetPer,
+			NART_ALL_SSA2_AchPer = NRA_SSA2.AchPer,
+			NART_ALL_SSA2_PassPer = NRA_SSA2.PassPer,
+
 			NART_GFE_SSA2Age_Leave = NRG_SSA2AGE.Leave,
 			NART_GFE_SSA2Age_RetPer = NRG_SSA2AGE.RetPer,
 			NART_GFE_SSA2Age_AchPer = NRG_SSA2AGE.AchPer,
 			NART_GFE_SSA2Age_PassPer = NRG_SSA2AGE.PassPer,
+			NART_ALL_SSA2Age_Leave = NRA_SSA2AGE.Leave,
+			NART_ALL_SSA2Age_RetPer = NRA_SSA2AGE.RetPer,
+			NART_ALL_SSA2Age_AchPer = NRA_SSA2AGE.AchPer,
+			NART_ALL_SSA2Age_PassPer = NRA_SSA2AGE.PassPer,
+
 			NART_GFE_DifDis_Leave = NRG_DIF.Leave,
 			NART_GFE_DifDis_RetPer = NRG_DIF.RetPer,
 			NART_GFE_DifDis_AchPer = NRG_DIF.AchPer,
 			NART_GFE_DifDis_PassPer = NRG_DIF.PassPer,
+			NART_ALL_DifDis_Leave = NRA_DIF.Leave,
+			NART_ALL_DifDis_RetPer = NRA_DIF.RetPer,
+			NART_ALL_DifDis_AchPer = NRA_DIF.AchPer,
+			NART_ALL_DifDis_PassPer = NRA_DIF.PassPer,
+
             NART_GFE_DifDisAge_Leave = NRG_DIFAGE.Leave,
 			NART_GFE_DifDisAge_RetPer = NRG_DIFAGE.RetPer,
 			NART_GFE_DifDisAge_AchPer = NRG_DIFAGE.AchPer,
-			NART_GFE_DifDisAge_PassPer = NRG_DIFAGE.PassPer
+			NART_GFE_DifDisAge_PassPer = NRG_DIFAGE.PassPer,
+			NART_ALL_DifDisAge_Leave = NRA_DIFAGE.Leave,
+			NART_ALL_DifDisAge_RetPer = NRA_DIFAGE.RetPer,
+			NART_ALL_DifDisAge_AchPer = NRA_DIFAGE.AchPer,
+			NART_ALL_DifDisAge_PassPer = NRA_DIFAGE.PassPer
 	'
 
     SET @SQLString += 
@@ -764,6 +896,12 @@ BEGIN
 			AND NRG_AIM.PG_AimID = CL.PG_AimID
 			AND NRG_AIM.PG_MapID IS NULL
 			AND NRG_AIM.PG_AgeLSCID IS NULL
+		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_Qual_Overall NRA_AIM
+			ON NRA_AIM.PG_HybridEndYearID = @NatRateYear
+			AND NRA_AIM.PG_CollegeTypeID = 0 --ALL
+			AND NRA_AIM.PG_AimID = CL.PG_AimID
+			AND NRA_AIM.PG_MapID IS NULL
+			AND NRA_AIM.PG_AgeLSCID IS NULL
     '
     
     SET @SQLString += 
@@ -795,6 +933,33 @@ BEGIN
 			SELECT
 				NR.PG_HybridEndYearID,
 				NR.PG_QualSizeID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NOT NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_QS
+			ON NRA_QS.PG_HybridEndYearID = @NatRateYear
+			AND NRA_QS.PG_QualSizeID = CL.PG_QualSizeID
+	'
+    
+    SET @SQLString += 
+        N'
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_QualSizeID,
 				NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
@@ -816,6 +981,31 @@ BEGIN
 			ON NRG_QSAGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_QSAGE.PG_QualSizeID = CL.PG_QualSizeID
 			AND NRG_QSAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_QualSizeID,
+				NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NOT NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_QSAGE
+			ON NRA_QSAGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_QSAGE.PG_QualSizeID = CL.PG_QualSizeID
+			AND NRA_QSAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
     
     SET @SQLString += 
@@ -846,6 +1036,33 @@ BEGIN
 		LEFT JOIN (
 			SELECT
 				NR.PG_HybridEndYearID,
+				NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_AGE
+			ON NRA_AGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_AGE.PG_AgeLSCID = CL.PG_AgeLSCID
+	'
+    
+    SET @SQLString += 
+        N'
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
 				NR.PG_SexID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
@@ -866,6 +1083,33 @@ BEGIN
 		) NRG_GEN
 			ON NRG_GEN.PG_HybridEndYearID = @NatRateYear
 			AND NRG_GEN.PG_SexID = CL.PG_SexID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_SexID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NOT NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_GEN
+			ON NRA_GEN.PG_HybridEndYearID = @NatRateYear
+			AND NRA_GEN.PG_SexID = CL.PG_SexID
+	'
+    
+    SET @SQLString += 
+        N'
 		LEFT JOIN (
 			SELECT
 				NR.PG_HybridEndYearID,
@@ -891,6 +1135,31 @@ BEGIN
 			ON NRG_GENAGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_GENAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 			AND NRG_GENAGE.PG_SexID = CL.PG_SexID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_AgeLSCID,
+				NR.PG_SexID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NOT NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_GENAGE
+			ON NRA_GENAGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_GENAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+			AND NRA_GENAGE.PG_SexID = CL.PG_SexID
     '
     
     SET @SQLString += 
@@ -918,6 +1187,33 @@ BEGIN
 		) NRG_LEV
 			ON NRG_LEV.PG_HybridEndYearID = @NatRateYear
 			AND NRG_LEV.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				PG_NVQLevelCPRID = NULL,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_LEV
+			ON NRA_LEV.PG_HybridEndYearID = @NatRateYear
+			AND NRA_LEV.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
+	'
+    
+    SET @SQLString += 
+        N'
         LEFT JOIN (
 			SELECT
 				NR.PG_HybridEndYearID,
@@ -943,6 +1239,31 @@ BEGIN
 			ON NRG_LEVAGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_LEVAGE.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
             AND NRG_LEVAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				PG_NVQLevelCPRID = NULL,
+                NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_LEVAGE
+			ON NRA_LEVAGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_LEVAGE.PG_NVQLevelCPRID = CL.PG_NVQLevelCPRID
+            AND NRA_LEVAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
     
     SET @SQLString += 
@@ -970,6 +1291,33 @@ BEGIN
 		) NRG_LEVG
 			ON NRG_LEVG.PG_HybridEndYearID = @NatRateYear
 			AND NRG_LEVG.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_NVQLevelGroupID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NOT NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_LEVG
+			ON NRA_LEVG.PG_HybridEndYearID = @NatRateYear
+			AND NRA_LEVG.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
+	'
+    
+    SET @SQLString += 
+        N'
         LEFT JOIN (
 			SELECT
 				NR.PG_HybridEndYearID,
@@ -995,6 +1343,31 @@ BEGIN
 			ON NRG_LEVGAGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_LEVGAGE.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
             AND NRG_LEVGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_NVQLevelGroupID,
+                NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NOT NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_LEVGAGE
+			ON NRA_LEVGAGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_LEVGAGE.PG_NVQLevelGroupID = CL.PG_NVQLevelGroupID
+            AND NRA_LEVGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
     '
 
     SET @SQLString += 
@@ -1022,6 +1395,33 @@ BEGIN
 		) NRG_ETH
 			ON NRG_ETH.PG_HybridEndYearID = @NatRateYear
 			AND NRG_ETH.PG_EthnicityID = CL.PG_EthnicityID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_EthnicityID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NOT NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_ETH
+			ON NRA_ETH.PG_HybridEndYearID = @NatRateYear
+			AND NRA_ETH.PG_EthnicityID = CL.PG_EthnicityID
+	'
+    
+    SET @SQLString += 
+        N'
         LEFT JOIN (
 			SELECT
 				NR.PG_HybridEndYearID,
@@ -1047,6 +1447,31 @@ BEGIN
 			ON NRG_ETHAGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_ETHAGE.PG_EthnicityID = CL.PG_EthnicityID
             AND NRG_ETHAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_EthnicityID,
+                NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NOT NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_ETHAGE
+			ON NRA_ETHAGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_ETHAGE.PG_EthnicityID = CL.PG_EthnicityID
+            AND NRA_ETHAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
 	SET @SQLString += 
@@ -1074,6 +1499,33 @@ BEGIN
 		) NRG_ETHG
 			ON NRG_ETHG.PG_HybridEndYearID = @NatRateYear
 			AND NRG_ETHG.PG_EthnicGroupID = CL.PG_EthnicGroupID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				PG_EthnicGroupID = NULL,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_ETHG
+			ON NRA_ETHG.PG_HybridEndYearID = @NatRateYear
+			AND NRA_ETHG.PG_EthnicGroupID = CL.PG_EthnicGroupID
+	'
+    
+    SET @SQLString += 
+        N'
         LEFT JOIN (
 			SELECT
 				NR.PG_HybridEndYearID,
@@ -1099,6 +1551,31 @@ BEGIN
 			ON NRG_ETHGAGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_ETHGAGE.PG_EthnicGroupID = CL.PG_EthnicGroupID
             AND NRG_ETHGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				PG_EthnicGroupID = NULL,
+                NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_ETHGAGE
+			ON NRA_ETHGAGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_ETHGAGE.PG_EthnicGroupID = CL.PG_EthnicGroupID
+            AND NRA_ETHGAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
     SET @SQLString += 
@@ -1130,6 +1607,33 @@ BEGIN
 			SELECT
 				NR.PG_HybridEndYearID,
 				NR.PG_SSA1ID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NOT NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_SSA1
+			ON NRA_SSA1.PG_HybridEndYearID = @NatRateYear
+			AND NRA_SSA1.PG_SSA1ID = CL.PG_SSA1ID
+	'
+    
+    SET @SQLString += 
+        N'
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_SSA1ID,
 				NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
@@ -1151,6 +1655,31 @@ BEGIN
 			ON NRG_SSA1AGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_SSA1AGE.PG_SSA1ID = CL.PG_SSA1ID
 			AND NRG_SSA1AGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_SSA1ID,
+				NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NOT NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_SSA1AGE
+			ON NRA_SSA1AGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_SSA1AGE.PG_SSA1ID = CL.PG_SSA1ID
+			AND NRA_SSA1AGE.PG_AgeLSCID = CL.PG_AgeLSCID
 	'
 
     SET @SQLString += 
@@ -1182,6 +1711,33 @@ BEGIN
 			SELECT
 				NR.PG_HybridEndYearID,
 				NR.PG_SSA2ID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NOT NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_SSA2
+			ON NRA_SSA2.PG_HybridEndYearID = @NatRateYear
+			AND NRA_SSA2.PG_SSA2ID = CL.PG_SSA2ID
+	'
+    
+    SET @SQLString += 
+        N'
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_SSA2ID,
 				NR.PG_AgeLSCID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
@@ -1203,6 +1759,31 @@ BEGIN
 			ON NRG_SSA2AGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_SSA2AGE.PG_SSA2ID = CL.PG_SSA2ID
 			AND NRG_SSA2AGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_SSA2ID,
+				NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NOT NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NULL
+		) NRA_SSA2AGE
+			ON NRA_SSA2AGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_SSA2AGE.PG_SSA2ID = CL.PG_SSA2ID
+			AND NRA_SSA2AGE.PG_AgeLSCID = CL.PG_AgeLSCID
     '
 
     SET @SQLString += 
@@ -1230,6 +1811,33 @@ BEGIN
 		) NRG_DIF
 			ON NRG_DIF.PG_HybridEndYearID = @NatRateYear
 			AND NRG_DIF.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_DifficultyOrDisabilityID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NOT NULL
+		) NRA_DIF
+			ON NRA_DIF.PG_HybridEndYearID = @NatRateYear
+			AND NRA_DIF.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
+	'
+    
+    SET @SQLString += 
+        N'
         LEFT JOIN (
 			SELECT
 				NR.PG_HybridEndYearID,
@@ -1255,6 +1863,31 @@ BEGIN
 			ON NRG_DIFAGE.PG_HybridEndYearID = @NatRateYear
 			AND NRG_DIFAGE.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
             AND NRG_DIFAGE.PG_AgeLSCID = CL.PG_AgeLSCID
+		LEFT JOIN (
+			SELECT
+				NR.PG_HybridEndYearID,
+				NR.PG_DifficultyOrDisabilityID,
+                NR.PG_AgeLSCID,
+				Leave = NR.BM_Count_Overall,
+				RetPer = NR.BM_RetCount_Overall / 100,
+				AchPer = NR.BM_AchCount_Overall / 100,
+				PassPer = NR.BM_AchComplete_Overall / 100
+			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			WHERE
+				NR.PG_HybridEndYearID = @NatRateYear
+				AND NR.PG_CollegeTypeID = 0 --ALL
+				AND NR.PG_AgeLSCID IS NOT NULL
+				AND NR.PG_NVQLevelGroupID IS NULL
+				AND NR.PG_QualSizeID IS NULL
+				AND NR.PG_SSA1ID IS NULL
+				AND NR.PG_SSA2ID IS NULL
+				AND NR.PG_SexID IS NULL
+				AND NR.PG_EthnicityID IS NULL
+				AND NR.PG_DifficultyOrDisabilityID IS NOT NULL
+		) NRA_DIFAGE
+			ON NRA_DIFAGE.PG_HybridEndYearID = @NatRateYear
+			AND NRA_DIFAGE.PG_DifficultyOrDisabilityID = CL.PG_DifficultyOrDisabilityID
+            AND NRA_DIFAGE.PG_AgeLSCID = CL.PG_AgeLSCID
 
 		WHERE 
 			CL.PG_HybridEndYearID = @AcademicYear

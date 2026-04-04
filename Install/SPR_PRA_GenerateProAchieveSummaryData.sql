@@ -267,10 +267,12 @@ BEGIN
 					NART_GFE_Overall_RetPer FLOAT NULL,
 					NART_GFE_Overall_AchPer FLOAT NULL,
 					NART_GFE_Overall_PassPer FLOAT NULL,
+
 					NART_ALL_Overall_Leave INT NULL,
 					NART_ALL_Overall_RetPer FLOAT NULL,
 					NART_ALL_Overall_AchPer FLOAT NULL,
 					NART_ALL_Overall_PassPer FLOAT NULL,
+
 					NART_GFE_Aim_Leave INT NULL,
 					NART_GFE_Aim_Comp INT NULL,
 					NART_GFE_Aim_RetPer FLOAT NULL,
@@ -278,98 +280,229 @@ BEGIN
 					NART_GFE_Aim_AchPer FLOAT NULL,
 					NART_GFE_Aim_Pass INT NULL,
 					NART_GFE_Aim_PassPer FLOAT NULL,
+					NART_ALL_Aim_Leave INT NULL,
+					NART_ALL_Aim_Comp INT NULL,
+					NART_ALL_Aim_RetPer FLOAT NULL,
+					NART_ALL_Aim_Ach INT NULL,
+					NART_ALL_Aim_AchPer FLOAT NULL,
+					NART_ALL_Aim_Pass INT NULL,
+					NART_ALL_Aim_PassPer FLOAT NULL,
+
 					NART_GFE_Standard_Leave INT NULL,
 					NART_GFE_Standard_RetPer FLOAT NULL,
 					NART_GFE_Standard_AchPer FLOAT NULL,
 					NART_GFE_Standard_PassPer FLOAT NULL,
-					NART_GFE_FrameworkProg_Leave INT NULL,
-					NART_GFE_FrameworkProg_RetPer FLOAT NULL,
-					NART_GFE_FrameworkProg_AchPer FLOAT NULL,
-					NART_GFE_FrameworkProg_PassPer FLOAT NULL,
+					NART_ALL_Standard_Leave INT NULL,
+					NART_ALL_Standard_RetPer FLOAT NULL,
+					NART_ALL_Standard_AchPer FLOAT NULL,
+					NART_ALL_Standard_PassPer FLOAT NULL,
+
 					NART_GFE_Framework_Leave INT NULL,
 					NART_GFE_Framework_RetPer FLOAT NULL,
 					NART_GFE_Framework_AchPer FLOAT NULL,
 					NART_GFE_Framework_PassPer FLOAT NULL,
-					NART_GFE_FworkPTSSA_Leave INT NULL,
-					NART_GFE_FworkPTSSA_RetPer FLOAT NULL,
-					NART_GFE_FworkPTSSA_AchPer FLOAT NULL,
-					NART_GFE_FworkPTSSA_PassPer FLOAT NULL,
+					NART_ALL_Framework_Leave INT NULL,
+					NART_ALL_Framework_RetPer FLOAT NULL,
+					NART_ALL_Framework_AchPer FLOAT NULL,
+					NART_ALL_Framework_PassPer FLOAT NULL,
+
+					NART_GFE_FrameworkProgType_Leave INT NULL,
+					NART_GFE_FrameworkProgType_RetPer FLOAT NULL,
+					NART_GFE_FrameworkProgType_AchPer FLOAT NULL,
+					NART_GFE_FrameworkProgType_PassPer FLOAT NULL,
+					NART_ALL_FrameworkProgType_Leave INT NULL,
+					NART_ALL_FrameworkProgType_RetPer FLOAT NULL,
+					NART_ALL_FrameworkProgType_AchPer FLOAT NULL,
+					NART_ALL_FrameworkProgType_PassPer FLOAT NULL,
+
+					NART_GFE_FrameworkProgTypeSSA_Leave INT NULL,
+					NART_GFE_FrameworkProgTypeSSA_RetPer FLOAT NULL,
+					NART_GFE_FrameworkProgTypeSSA_AchPer FLOAT NULL,
+					NART_GFE_FrameworkProgTypeSSA_PassPer FLOAT NULL,
+					NART_ALL_FrameworkProgTypeSSA_Leave INT NULL,
+					NART_ALL_FrameworkProgTypeSSA_RetPer FLOAT NULL,
+					NART_ALL_FrameworkProgTypeSSA_AchPer FLOAT NULL,
+					NART_ALL_FrameworkProgTypeSSA_PassPer FLOAT NULL,
+			'
+
+			SET @SQLString += 
+				N'
 					NART_GFE_Age_Leave INT NULL,
 					NART_GFE_Age_RetPer FLOAT NULL,
 					NART_GFE_Age_AchPer FLOAT NULL,
 					NART_GFE_Age_PassPer FLOAT NULL,
-					NART_GFE_Gender_Leave INT NULL,
-					NART_GFE_Gender_RetPer FLOAT NULL,
-					NART_GFE_Gender_AchPer FLOAT NULL,
-					NART_GFE_Gender_PassPer FLOAT NULL,
-					NART_GFE_GenderAge_Leave INT NULL,
-					NART_GFE_GenderAge_RetPer FLOAT NULL,
-					NART_GFE_GenderAge_AchPer FLOAT NULL,
-					NART_GFE_GenderAge_PassPer FLOAT NULL,
+					NART_ALL_Age_Leave INT NULL,
+					NART_ALL_Age_RetPer FLOAT NULL,
+					NART_ALL_Age_AchPer FLOAT NULL,
+					NART_ALL_Age_PassPer FLOAT NULL,
+
+					NART_GFE_Sex_Leave INT NULL,
+					NART_GFE_Sex_RetPer FLOAT NULL,
+					NART_GFE_Sex_AchPer FLOAT NULL,
+					NART_GFE_Sex_PassPer FLOAT NULL,
+					NART_ALL_Sex_Leave INT NULL,
+					NART_ALL_Sex_RetPer FLOAT NULL,
+					NART_ALL_Sex_AchPer FLOAT NULL,
+					NART_ALL_Sex_PassPer FLOAT NULL,
+
+					NART_GFE_SexAge_Leave INT NULL,
+					NART_GFE_SexAge_RetPer FLOAT NULL,
+					NART_GFE_SexAge_AchPer FLOAT NULL,
+					NART_GFE_SexAge_PassPer FLOAT NULL,
+					NART_ALL_SexAge_Leave INT NULL,
+					NART_ALL_SexAge_RetPer FLOAT NULL,
+					NART_ALL_SexAge_AchPer FLOAT NULL,
+					NART_ALL_SexAge_PassPer FLOAT NULL,
+
 					NART_GFE_Level_Leave INT NULL,
 					NART_GFE_Level_RetPer FLOAT NULL,
 					NART_GFE_Level_AchPer FLOAT NULL,
 					NART_GFE_Level_PassPer FLOAT NULL,
+					NART_ALL_Level_Leave INT NULL,
+					NART_ALL_Level_RetPer FLOAT NULL,
+					NART_ALL_Level_AchPer FLOAT NULL,
+					NART_ALL_Level_PassPer FLOAT NULL,
+
 					NART_GFE_LevelAge_Leave INT NULL,
 					NART_GFE_LevelAge_RetPer FLOAT NULL,
 					NART_GFE_LevelAge_AchPer FLOAT NULL,
 					NART_GFE_LevelAge_PassPer FLOAT NULL,
-                    NART_GFE_LevelGrp_Leave INT NULL,
-					NART_GFE_LevelGrp_RetPer FLOAT NULL,
-					NART_GFE_LevelGrp_AchPer FLOAT NULL,
-					NART_GFE_LevelGrp_PassPer FLOAT NULL,
-					NART_GFE_LevelGrpAge_Leave INT NULL,
-					NART_GFE_LevelGrpAge_RetPer FLOAT NULL,
-					NART_GFE_LevelGrpAge_AchPer FLOAT NULL,
-					NART_GFE_LevelGrpAge_PassPer FLOAT NULL,
+					NART_ALL_LevelAge_Leave INT NULL,
+					NART_ALL_LevelAge_RetPer FLOAT NULL,
+					NART_ALL_LevelAge_AchPer FLOAT NULL,
+					NART_ALL_LevelAge_PassPer FLOAT NULL,
+
+                    NART_GFE_LevelGroup_Leave INT NULL,
+					NART_GFE_LevelGroup_RetPer FLOAT NULL,
+					NART_GFE_LevelGroup_AchPer FLOAT NULL,
+					NART_GFE_LevelGroup_PassPer FLOAT NULL,
+					NART_ALL_LevelGroup_Leave INT NULL,
+					NART_ALL_LevelGroup_RetPer FLOAT NULL,
+					NART_ALL_LevelGroup_AchPer FLOAT NULL,
+					NART_ALL_LevelGroup_PassPer FLOAT NULL,
+
+					NART_GFE_LevelGroupAge_Leave INT NULL,
+					NART_GFE_LevelGroupAge_RetPer FLOAT NULL,
+					NART_GFE_LevelGroupAge_AchPer FLOAT NULL,
+					NART_GFE_LevelGroupAge_PassPer FLOAT NULL,
+					NART_ALL_LevelGroupAge_Leave INT NULL,
+					NART_ALL_LevelGroupAge_RetPer FLOAT NULL,
+					NART_ALL_LevelGroupAge_AchPer FLOAT NULL,
+					NART_ALL_LevelGroupAge_PassPer FLOAT NULL,
+			'
+
+			SET @SQLString += 
+				N'
 					NART_GFE_QualType_Leave INT NULL,
 					NART_GFE_QualType_RetPer FLOAT NULL,
 					NART_GFE_QualType_AchPer FLOAT NULL,
 					NART_GFE_QualType_PassPer FLOAT NULL,
+					NART_ALL_QualType_Leave INT NULL,
+					NART_ALL_QualType_RetPer FLOAT NULL,
+					NART_ALL_QualType_AchPer FLOAT NULL,
+					NART_ALL_QualType_PassPer FLOAT NULL,
+
 					NART_GFE_QualTypeAge_Leave INT NULL,
 					NART_GFE_QualTypeAge_RetPer FLOAT NULL,
 					NART_GFE_QualTypeAge_AchPer FLOAT NULL,
 					NART_GFE_QualTypeAge_PassPer FLOAT NULL,
+					NART_ALL_QualTypeAge_Leave INT NULL,
+					NART_ALL_QualTypeAge_RetPer FLOAT NULL,
+					NART_ALL_QualTypeAge_AchPer FLOAT NULL,
+					NART_ALL_QualTypeAge_PassPer FLOAT NULL,
+
 					NART_GFE_Ethnicity_Leave INT NULL,
 					NART_GFE_Ethnicity_RetPer FLOAT NULL,
 					NART_GFE_Ethnicity_AchPer FLOAT NULL,
 					NART_GFE_Ethnicity_PassPer FLOAT NULL,
+					NART_ALL_Ethnicity_Leave INT NULL,
+					NART_ALL_Ethnicity_RetPer FLOAT NULL,
+					NART_ALL_Ethnicity_AchPer FLOAT NULL,
+					NART_ALL_Ethnicity_PassPer FLOAT NULL,
+
                     NART_GFE_EthnicityAge_Leave INT NULL,
 					NART_GFE_EthnicityAge_RetPer FLOAT NULL,
 					NART_GFE_EthnicityAge_AchPer FLOAT NULL,
 					NART_GFE_EthnicityAge_PassPer FLOAT NULL,
+					NART_ALL_EthnicityAge_Leave INT NULL,
+					NART_ALL_EthnicityAge_RetPer FLOAT NULL,
+					NART_ALL_EthnicityAge_AchPer FLOAT NULL,
+					NART_ALL_EthnicityAge_PassPer FLOAT NULL,
+
 					NART_GFE_EthnicGroup_Leave INT NULL,
 					NART_GFE_EthnicGroup_RetPer FLOAT NULL,
 					NART_GFE_EthnicGroup_AchPer FLOAT NULL,
 					NART_GFE_EthnicGroup_PassPer FLOAT NULL,
+					NART_ALL_EthnicGroup_Leave INT NULL,
+					NART_ALL_EthnicGroup_RetPer FLOAT NULL,
+					NART_ALL_EthnicGroup_AchPer FLOAT NULL,
+					NART_ALL_EthnicGroup_PassPer FLOAT NULL,
+
                     NART_GFE_EthnicGroupAge_Leave INT NULL,
 					NART_GFE_EthnicGroupAge_RetPer FLOAT NULL,
 					NART_GFE_EthnicGroupAge_AchPer FLOAT NULL,
 					NART_GFE_EthnicGroupAge_PassPer FLOAT NULL,
+					NART_ALL_EthnicGroupAge_Leave INT NULL,
+					NART_ALL_EthnicGroupAge_RetPer FLOAT NULL,
+					NART_ALL_EthnicGroupAge_AchPer FLOAT NULL,
+					NART_ALL_EthnicGroupAge_PassPer FLOAT NULL,
+			'
+
+			SET @SQLString += 
+				N'
 					NART_GFE_SSA1_Leave INT NULL,
 					NART_GFE_SSA1_RetPer FLOAT NULL,
 					NART_GFE_SSA1_AchPer FLOAT NULL,
 					NART_GFE_SSA1_PassPer FLOAT NULL,
+					NART_ALL_SSA1_Leave INT NULL,
+					NART_ALL_SSA1_RetPer FLOAT NULL,
+					NART_ALL_SSA1_AchPer FLOAT NULL,
+					NART_ALL_SSA1_PassPer FLOAT NULL,
+
 					NART_GFE_SSA1Age_Leave INT NULL,
 					NART_GFE_SSA1Age_RetPer FLOAT NULL,
 					NART_GFE_SSA1Age_AchPer FLOAT NULL,
 					NART_GFE_SSA1Age_PassPer FLOAT NULL,
+					NART_ALL_SSA1Age_Leave INT NULL,
+					NART_ALL_SSA1Age_RetPer FLOAT NULL,
+					NART_ALL_SSA1Age_AchPer FLOAT NULL,
+					NART_ALL_SSA1Age_PassPer FLOAT NULL,
+
 					NART_GFE_SSA2_Leave INT NULL,
 					NART_GFE_SSA2_RetPer FLOAT NULL,
 					NART_GFE_SSA2_AchPer FLOAT NULL,
 					NART_GFE_SSA2_PassPer FLOAT NULL,
+					NART_ALL_SSA2_Leave INT NULL,
+					NART_ALL_SSA2_RetPer FLOAT NULL,
+					NART_ALL_SSA2_AchPer FLOAT NULL,
+					NART_ALL_SSA2_PassPer FLOAT NULL,
+
 					NART_GFE_SSA2Age_Leave INT NULL,
 					NART_GFE_SSA2Age_RetPer FLOAT NULL,
 					NART_GFE_SSA2Age_AchPer FLOAT NULL,
 					NART_GFE_SSA2Age_PassPer FLOAT NULL,
+					NART_ALL_SSA2Age_Leave INT NULL,
+					NART_ALL_SSA2Age_RetPer FLOAT NULL,
+					NART_ALL_SSA2Age_AchPer FLOAT NULL,
+					NART_ALL_SSA2Age_PassPer FLOAT NULL,
+
 					NART_GFE_DifDis_Leave INT NULL,
 					NART_GFE_DifDis_RetPer FLOAT NULL,
 					NART_GFE_DifDis_AchPer FLOAT NULL,
 					NART_GFE_DifDis_PassPer FLOAT NULL,
+					NART_ALL_DifDis_Leave INT NULL,
+					NART_ALL_DifDis_RetPer FLOAT NULL,
+					NART_ALL_DifDis_AchPer FLOAT NULL,
+					NART_ALL_DifDis_PassPer FLOAT NULL,
+
                     NART_GFE_DifDisAge_Leave INT NULL,
 					NART_GFE_DifDisAge_RetPer FLOAT NULL,
 					NART_GFE_DifDisAge_AchPer FLOAT NULL,
-					NART_GFE_DifDisAge_PassPer FLOAT NULL
+					NART_GFE_DifDisAge_PassPer FLOAT NULL,
+					NART_ALL_DifDisAge_Leave INT NULL,
+					NART_ALL_DifDisAge_RetPer FLOAT NULL,
+					NART_ALL_DifDisAge_AchPer FLOAT NULL,
+					NART_ALL_DifDisAge_PassPer FLOAT NULL
 				)'
 
 			SET @SQLParams = N'';
@@ -471,7 +604,7 @@ BEGIN
 				END
 		END
 
-	SET @Message = N'5% - Table Set Up';
+	SET @Message = N'5%% - Table Set Up';
 	RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
 
 	--Insert CL Overall
@@ -526,7 +659,7 @@ BEGIN
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
-	SET @Message = N'15% - CL Overall ' + @AcademicYear + ' Imported';
+	SET @Message = N'15%% - CL Overall ' + @AcademicYear + ' Imported';
 	RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
 
 	--Insert CL Timely
@@ -581,7 +714,7 @@ BEGIN
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
-	SET @Message = N'30% - CL Timely ' + @AcademicYear + ' Imported';
+	SET @Message = N'30%% - CL Timely ' + @AcademicYear + ' Imported';
 	RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
 
 	--Insert ER Overall
@@ -637,7 +770,7 @@ BEGIN
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
-	SET @Message = N'50% - ER Overall ' + @AcademicYear + ' Imported';
+	SET @Message = N'50%% - ER Overall ' + @AcademicYear + ' Imported';
 	RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
 
 	--Insert ER Timely
@@ -692,7 +825,7 @@ BEGIN
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 	
-	SET @Message = N'70% - ER Timely ' + @AcademicYear + ' Imported';
+	SET @Message = N'70%% - ER Timely ' + @AcademicYear + ' Imported';
 	RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
 
 	--Insert HE Overall
@@ -747,7 +880,7 @@ BEGIN
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
-	SET @Message = N'85% - HE Overall ' + @AcademicYear + ' Imported';
+	SET @Message = N'85%% - HE Overall ' + @AcademicYear + ' Imported';
 	RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
 
 	--Insert HE Timely
@@ -802,7 +935,7 @@ BEGIN
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
-	SET @Message = N'100% - HE Timely ' + @AcademicYear + ' Imported';
+	SET @Message = N'100%% - HE Timely ' + @AcademicYear + ' Imported';
 	RAISERROR ( @Message, 10, 1 ) WITH NOWAIT;
 
 	SET @Message = N'' + @AcademicYear + ' Import Complete';
