@@ -58,6 +58,28 @@ BEGIN
 		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_Qual_Timely NR
 
 		
+		--National Achievement Rates
+		DROP TABLE IF EXISTS #NARTs
+		SELECT
+			NR.PG_ExpEndYrID,
+			NR.PG_CollegeTypeID,
+			NR.PG_AgeLSCID,
+			NR.PG_NVQLevelGroupID,
+			NR.PG_QualSizeID,
+			NR.PG_SSA1ID,
+			NR.PG_SSA2ID,
+			NR.PG_SexID,
+			NR.PG_EthnicityID,
+			NR.PG_DifficultyOrDisabilityID,
+			NR.BM_Count_Timely,
+			NR.BM_AchCount_Timely
+			INTO #NARTs
+		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+		WHERE
+			NR.PG_ExpEndYrID = @NatRateYear
+			AND NR.PG_CollegeTypeID IN ( 0, 2 )
+
+
 		INSERT INTO ' + @OutputTableLocation + 'PRA_ProAchieveSummaryData WITH (TABLOCKX)
 		SELECT
 			EndYear = CL.PG_ExpEndYrID,
@@ -830,7 +852,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -851,7 +873,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -905,7 +927,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -928,7 +950,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -956,7 +978,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -981,7 +1003,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1005,12 +1027,12 @@ BEGIN
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_QualSizeID,
-				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Timely / 100,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1030,12 +1052,12 @@ BEGIN
 			SELECT
 				NR.PG_ExpEndYrID,
 				NR.PG_QualSizeID,
-				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Timely / 100,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1060,11 +1082,12 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_QualSizeID,
 				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Timely / 100,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1086,11 +1109,12 @@ BEGIN
 				NR.PG_ExpEndYrID,
 				NR.PG_QualSizeID,
 				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Timely / 100,
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1119,7 +1143,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1142,7 +1166,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1169,7 +1193,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1192,7 +1216,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1220,7 +1244,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1245,7 +1269,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1273,7 +1297,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1296,7 +1320,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1324,7 +1348,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1349,7 +1373,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1377,7 +1401,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1400,7 +1424,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1428,7 +1452,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1453,7 +1477,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1481,7 +1505,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1504,7 +1528,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1532,7 +1556,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1557,7 +1581,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1585,7 +1609,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1608,7 +1632,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1636,7 +1660,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1661,7 +1685,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1689,7 +1713,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1712,7 +1736,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1740,7 +1764,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1765,7 +1789,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1793,7 +1817,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1816,7 +1840,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1844,7 +1868,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1869,7 +1893,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1897,7 +1921,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1920,7 +1944,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1948,7 +1972,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1973,7 +1997,7 @@ BEGIN
 				RetPer = NULL,
 				AchPer = NR.BM_AchCount_Timely / 100,
 				PassPer = NULL
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Timely NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_ExpEndYrID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL

@@ -56,6 +56,31 @@ BEGIN
 		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_Qual_Overall NR
 
 
+		--National Achievement Rates
+		DROP TABLE IF EXISTS #NARTs
+		SELECT
+			NR.PG_HybridEndYearID,
+			NR.PG_CollegeTypeID,
+			NR.PG_AgeLSCID,
+			NR.PG_NVQLevelGroupID,
+			NR.PG_QualSizeID,
+			NR.PG_SSA1ID,
+			NR.PG_SSA2ID,
+			NR.PG_SexID,
+			NR.PG_EthnicityID,
+			NR.PG_DifficultyOrDisabilityID,
+			NR.BM_Count_Overall,
+			NR.BM_AchCount_Overall,
+			NR.BM_RetCount_Overall,
+			NR.BM_AchComplete_Overall
+			INTO #NARTs
+		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+		WHERE
+			NR.PG_HybridEndYearID = @NatRateYear
+			AND NR.PG_CollegeTypeID IN ( 0, 2 )
+
+
+
 		INSERT INTO ' + @OutputTableLocation + 'PRA_ProAchieveSummaryData WITH (TABLOCKX)
 		SELECT
 			EndYear = CL.PG_HybridEndYearID,
@@ -888,7 +913,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -909,7 +934,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -963,7 +988,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -986,7 +1011,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1014,7 +1039,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1039,7 +1064,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1063,12 +1088,12 @@ BEGIN
 			SELECT
 				NR.PG_HybridEndYearID,
 				NR.PG_QualSizeID,
-				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1088,12 +1113,12 @@ BEGIN
 			SELECT
 				NR.PG_HybridEndYearID,
 				NR.PG_QualSizeID,
-				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1118,11 +1143,12 @@ BEGIN
 				NR.PG_HybridEndYearID,
 				NR.PG_QualSizeID,
 				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1144,11 +1170,12 @@ BEGIN
 				NR.PG_HybridEndYearID,
 				NR.PG_QualSizeID,
 				NR.PG_AgeLSCID,
+				NR.PG_NVQLevelGroupID,
 				Leave = NR.BM_Count_Overall,
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1177,7 +1204,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1200,7 +1227,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1227,7 +1254,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1250,7 +1277,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1278,7 +1305,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1303,7 +1330,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1331,7 +1358,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1354,7 +1381,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1382,7 +1409,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1407,7 +1434,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1435,7 +1462,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1458,7 +1485,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1486,7 +1513,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1511,7 +1538,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1539,7 +1566,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1562,7 +1589,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1590,7 +1617,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1615,7 +1642,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1643,7 +1670,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1666,7 +1693,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1694,7 +1721,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1719,7 +1746,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1747,7 +1774,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1770,7 +1797,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1798,7 +1825,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1823,7 +1850,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1851,7 +1878,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1874,7 +1901,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1902,7 +1929,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1927,7 +1954,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -1955,7 +1982,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -1978,7 +2005,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
@@ -2006,7 +2033,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 2 --GFE
@@ -2031,7 +2058,7 @@ BEGIN
 				RetPer = NR.BM_RetCount_Overall / 100,
 				AchPer = NR.BM_AchCount_Overall / 100,
 				PassPer = NR.BM_AchComplete_Overall / 100
-			FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_CL_High_Overall NR
+			FROM #NARTs NR
 			WHERE
 				NR.PG_HybridEndYearID = @NatRateYear
 				AND NR.PG_CollegeTypeID = 0 --ALL
