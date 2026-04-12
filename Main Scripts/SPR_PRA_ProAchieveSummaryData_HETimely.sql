@@ -444,24 +444,6 @@ BEGIN
 			NART_ALL_SexAge_AchPer = NULL,
 			NART_ALL_SexAge_PassPer = NULL,
 
-			NART_GFE_Level_Leave = NULL,
-			NART_GFE_Level_RetPer = NULL,
-			NART_GFE_Level_AchPer = NULL,
-			NART_GFE_Level_PassPer = NULL,
-			NART_ALL_Level_Leave = NULL,
-			NART_ALL_Level_RetPer = NULL,
-			NART_ALL_Level_AchPer = NULL,
-			NART_ALL_Level_PassPer = NULL,
-
-            NART_GFE_LevelAge_Leave = NULL,
-			NART_GFE_LevelAge_RetPer = NULL,
-			NART_GFE_LevelAge_AchPer = NULL,
-			NART_GFE_LevelAge_PassPer = NULL,
-			NART_ALL_LevelAge_Leave = NULL,
-			NART_ALL_LevelAge_RetPer = NULL,
-			NART_ALL_LevelAge_AchPer = NULL,
-			NART_ALL_LevelAge_PassPer = NULL,
-
             NART_GFE_LevelGroup_Leave = NULL,
 			NART_GFE_LevelGroup_RetPer = NULL,
 			NART_GFE_LevelGroup_AchPer = NULL,
@@ -536,24 +518,6 @@ BEGIN
 			NART_ALL_EthnicityAge_RetPer = NULL,
 			NART_ALL_EthnicityAge_AchPer = NULL,
 			NART_ALL_EthnicityAge_PassPer = NULL,
-
-			NART_GFE_EthnicGroup_Leave = NULL,
-			NART_GFE_EthnicGroup_RetPer = NULL,
-			NART_GFE_EthnicGroup_AchPer = NULL,
-			NART_GFE_EthnicGroup_PassPer = NULL,
-			NART_ALL_EthnicGroup_Leave = NULL,
-			NART_ALL_EthnicGroup_RetPer = NULL,
-			NART_ALL_EthnicGroup_AchPer = NULL,
-			NART_ALL_EthnicGroup_PassPer = NULL,
-
-            NART_GFE_EthnicGroupAge_Leave = NULL,
-			NART_GFE_EthnicGroupAge_RetPer = NULL,
-			NART_GFE_EthnicGroupAge_AchPer = NULL,
-			NART_GFE_EthnicGroupAge_PassPer = NULL,
-			NART_ALL_EthnicGroupAge_Leave = NULL,
-			NART_ALL_EthnicGroupAge_RetPer = NULL,
-			NART_ALL_EthnicGroupAge_AchPer = NULL,
-			NART_ALL_EthnicGroupAge_PassPer = NULL,
 	'
 
     SET @SQLString += 

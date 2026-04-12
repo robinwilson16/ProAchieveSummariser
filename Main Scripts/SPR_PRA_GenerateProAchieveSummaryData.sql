@@ -369,24 +369,6 @@ BEGIN
 					NART_ALL_SexAge_AchPer FLOAT NULL,
 					NART_ALL_SexAge_PassPer FLOAT NULL,
 
-					NART_GFE_Level_Leave INT NULL,
-					NART_GFE_Level_RetPer FLOAT NULL,
-					NART_GFE_Level_AchPer FLOAT NULL,
-					NART_GFE_Level_PassPer FLOAT NULL,
-					NART_ALL_Level_Leave INT NULL,
-					NART_ALL_Level_RetPer FLOAT NULL,
-					NART_ALL_Level_AchPer FLOAT NULL,
-					NART_ALL_Level_PassPer FLOAT NULL,
-
-					NART_GFE_LevelAge_Leave INT NULL,
-					NART_GFE_LevelAge_RetPer FLOAT NULL,
-					NART_GFE_LevelAge_AchPer FLOAT NULL,
-					NART_GFE_LevelAge_PassPer FLOAT NULL,
-					NART_ALL_LevelAge_Leave INT NULL,
-					NART_ALL_LevelAge_RetPer FLOAT NULL,
-					NART_ALL_LevelAge_AchPer FLOAT NULL,
-					NART_ALL_LevelAge_PassPer FLOAT NULL,
-
                     NART_GFE_LevelGroup_Leave INT NULL,
 					NART_GFE_LevelGroup_RetPer FLOAT NULL,
 					NART_GFE_LevelGroup_AchPer FLOAT NULL,
@@ -461,24 +443,6 @@ BEGIN
 					NART_ALL_EthnicityAge_RetPer FLOAT NULL,
 					NART_ALL_EthnicityAge_AchPer FLOAT NULL,
 					NART_ALL_EthnicityAge_PassPer FLOAT NULL,
-
-					NART_GFE_EthnicGroup_Leave INT NULL,
-					NART_GFE_EthnicGroup_RetPer FLOAT NULL,
-					NART_GFE_EthnicGroup_AchPer FLOAT NULL,
-					NART_GFE_EthnicGroup_PassPer FLOAT NULL,
-					NART_ALL_EthnicGroup_Leave INT NULL,
-					NART_ALL_EthnicGroup_RetPer FLOAT NULL,
-					NART_ALL_EthnicGroup_AchPer FLOAT NULL,
-					NART_ALL_EthnicGroup_PassPer FLOAT NULL,
-
-                    NART_GFE_EthnicGroupAge_Leave INT NULL,
-					NART_GFE_EthnicGroupAge_RetPer FLOAT NULL,
-					NART_GFE_EthnicGroupAge_AchPer FLOAT NULL,
-					NART_GFE_EthnicGroupAge_PassPer FLOAT NULL,
-					NART_ALL_EthnicGroupAge_Leave INT NULL,
-					NART_ALL_EthnicGroupAge_RetPer FLOAT NULL,
-					NART_ALL_EthnicGroupAge_AchPer FLOAT NULL,
-					NART_ALL_EthnicGroupAge_PassPer FLOAT NULL,
 			'
 
 			SET @SQLString += 

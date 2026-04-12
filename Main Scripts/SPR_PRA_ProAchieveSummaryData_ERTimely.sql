@@ -50,11 +50,54 @@ BEGIN
 		SELECT
 			@NatRateYear = MAX ( NR.PG_ExpEndYrID )
 		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NR
-	'
-    
 
-    SET @SQLString += 
-        N'
+
+		--National Achievement Rates
+		DROP TABLE IF EXISTS #NARTs
+		SELECT
+			NR.PG_ExpEndYrID,
+			NR.PG_CollegeTypeID,
+			NR.PG_WBLFundAgeGroupID,
+			NR.PG_SSA1ID,
+			NR.PG_SSA2ID,
+			NR.PG_ProgTypeID,
+			NR.PG_EthnicityID,
+			NR.PG_EthnicityGroupQARID,
+			NR.PG_SexID,
+			NR.PG_DifficultyOrDisabilityID,
+			NR.PG_LearningDifficultyID,
+			NR.BMLeave,
+			NR.BMAchFrameTimely,
+			NR.BMAchFrameTimelyLeave
+			INTO #NARTs
+		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NR
+		WHERE
+			NR.PG_ExpEndYrID = @NatRateYear
+			AND NR.PG_CollegeTypeID IN ( 0, 2 )
+
+
+		--National Achievement Rates Standard
+		DROP TABLE IF EXISTS #NARTsStd
+		SELECT
+			NR.PG_ExpEndYrID,
+			NR.PG_CollegeTypeID,
+			NR.PG_WBLFundAgeGroupID,
+			NR.PG_SSA1ID,
+			NR.PG_SSA2ID,
+			NR.PG_ProgTypeID,
+			NR.PG_FrameworkID,
+			NR.PG_AppStandardID,
+			NR.BMLeave,
+			NR.BMAchFrameTimely,
+			NR.BMAchFrameTimelyLeave
+			INTO #NARTsStd
+		FROM ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NR
+		WHERE
+			NR.PG_ExpEndYrID = @NatRateYear
+			AND NR.PG_CollegeTypeID IN ( 0, 2 )
+
+
+		--Main Query
 		INSERT INTO ' + @OutputTableLocation + 'PRA_ProAchieveSummaryData WITH (TABLOCKX)
 		SELECT
 			EndYear = ER.PG_ExpEndYrID,
@@ -560,40 +603,22 @@ BEGIN
 			NART_ALL_SexAge_AchPer = CAST ( NRA_GENAGE.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
 			NART_ALL_SexAge_PassPer = NULL,
 
-			NART_GFE_Level_Leave = NRG_LEV.BMLeave,
-			NART_GFE_Level_RetPer = NULL,
-			NART_GFE_Level_AchPer = CAST ( NRG_LEV.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
-			NART_GFE_Level_PassPer = NULL,
-			NART_ALL_Level_Leave = NRA_LEV.BMLeave,
-			NART_ALL_Level_RetPer = NULL,
-			NART_ALL_Level_AchPer = CAST ( NRA_LEV.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
-			NART_ALL_Level_PassPer = NULL,
-
-            NART_GFE_LevelAge_Leave = NRG_LEVAGE.BMLeave,
-			NART_GFE_LevelAge_RetPer = NULL,
-			NART_GFE_LevelAge_AchPer = CAST ( NRG_LEVAGE.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
-			NART_GFE_LevelAge_PassPer = NULL,
-			NART_ALL_LevelAge_Leave = NRA_LEVAGE.BMLeave,
-			NART_ALL_LevelAge_RetPer = NULL,
-			NART_ALL_LevelAge_AchPer = CAST ( NRA_LEVAGE.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
-			NART_ALL_LevelAge_PassPer = NULL,
-
-            NART_GFE_LevelGroup_Leave = NULL,
+			NART_GFE_LevelGroup_Leave = NRG_LEV.BMLeave,
 			NART_GFE_LevelGroup_RetPer = NULL,
-			NART_GFE_LevelGroup_AchPer = NULL,
+			NART_GFE_LevelGroup_AchPer = CAST ( NRG_LEV.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
 			NART_GFE_LevelGroup_PassPer = NULL,
-			NART_ALL_LevelGroup_Leave = NULL,
+			NART_ALL_LevelGroup_Leave = NRA_LEV.BMLeave,
 			NART_ALL_LevelGroup_RetPer = NULL,
-			NART_ALL_LevelGroup_AchPer = NULL,
+			NART_ALL_LevelGroup_AchPer = CAST ( NRA_LEV.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
 			NART_ALL_LevelGroup_PassPer = NULL,
 
-            NART_GFE_LevelGroupAge_Leave = NULL,
+            NART_GFE_LevelGroupAge_Leave = NRG_LEVAGE.BMLeave,
 			NART_GFE_LevelGroupAge_RetPer = NULL,
-			NART_GFE_LevelGroupAge_AchPer = NULL,
+			NART_GFE_LevelGroupAge_AchPer = CAST ( NRG_LEVAGE.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
 			NART_GFE_LevelGroupAge_PassPer = NULL,
-			NART_ALL_LevelGroupAge_Leave = NULL,
+			NART_ALL_LevelGroupAge_Leave = NRA_LEVAGE.BMLeave,
 			NART_ALL_LevelGroupAge_RetPer = NULL,
-			NART_ALL_LevelGroupAge_AchPer = NULL,
+			NART_ALL_LevelGroupAge_AchPer = CAST ( NRA_LEVAGE.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
 			NART_ALL_LevelGroupAge_PassPer = NULL,
 	'
 
@@ -652,24 +677,6 @@ BEGIN
 			NART_ALL_EthnicityAge_RetPer = NULL,
 			NART_ALL_EthnicityAge_AchPer = CAST ( NRA_ETHAGE.BMAchFrameTimelyLeave AS FLOAT ) / 100.00,
 			NART_ALL_EthnicityAge_PassPer = NULL,
-
-			NART_GFE_EthnicGroup_Leave = NULL,
-			NART_GFE_EthnicGroup_RetPer = NULL,
-			NART_GFE_EthnicGroup_AchPer = NULL,
-			NART_GFE_EthnicGroup_PassPer = NULL,
-			NART_ALL_EthnicGroup_Leave = NULL,
-			NART_ALL_EthnicGroup_RetPer = NULL,
-			NART_ALL_EthnicGroup_AchPer = NULL,
-			NART_ALL_EthnicGroup_PassPer = NULL,
-
-            NART_GFE_EthnicGroupAge_Leave = NULL,
-			NART_GFE_EthnicGroupAge_RetPer = NULL,
-			NART_GFE_EthnicGroupAge_AchPer = NULL,
-			NART_GFE_EthnicGroupAge_PassPer = NULL,
-			NART_ALL_EthnicGroupAge_Leave = NULL,
-			NART_ALL_EthnicGroupAge_RetPer = NULL,
-			NART_ALL_EthnicGroupAge_AchPer = NULL,
-			NART_ALL_EthnicGroupAge_PassPer = NULL,
 	'
 
 	SET @SQLString += 
@@ -866,7 +873,7 @@ BEGIN
 	
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_YR
+		LEFT JOIN #NARTs NRG_YR
 			ON NRG_YR.PG_ExpEndYrID = @NatRateYear
 			AND NRG_YR.PG_CollegeTypeID = 2 --GFE
 			AND NRG_YR.PG_WBLFundAgeGroupID IS NULL
@@ -878,7 +885,7 @@ BEGIN
 			AND NRG_YR.PG_SexID IS NULL
 			AND NRG_YR.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_YR.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_YR
+		LEFT JOIN #NARTs NRA_YR
 			ON NRA_YR.PG_ExpEndYrID = @NatRateYear
 			AND NRA_YR.PG_CollegeTypeID = 0 --ALL
 			AND NRA_YR.PG_WBLFundAgeGroupID IS NULL
@@ -894,7 +901,7 @@ BEGIN
 
 	SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRG_STD
+		LEFT JOIN #NARTsStd NRG_STD
 			ON NRG_STD.PG_ExpEndYrID = @NatRateYear
 			AND NRG_STD.PG_CollegeTypeID = 2 --GFE
 			AND NRG_STD.PG_WBLFundAgeGroupID IS NULL
@@ -903,7 +910,7 @@ BEGIN
 			AND NRG_STD.PG_ProgTypeID IS NULL
 			AND NRG_STD.PG_FrameworkID IS NULL
 			AND NRG_STD.PG_AppStandardID = ER.PG_AppStandardID
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRA_STD
+		LEFT JOIN #NARTsStd NRA_STD
 			ON NRA_STD.PG_ExpEndYrID = @NatRateYear
 			AND NRA_STD.PG_CollegeTypeID = 0 --ALL
 			AND NRA_STD.PG_WBLFundAgeGroupID IS NULL
@@ -916,7 +923,7 @@ BEGIN
 
 	SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRG_FWK
+		LEFT JOIN #NARTsStd NRG_FWK
 			ON NRG_FWK.PG_ExpEndYrID = @NatRateYear
 			AND NRG_FWK.PG_CollegeTypeID = 2 --GFE
 			AND NRG_FWK.PG_WBLFundAgeGroupID IS NULL
@@ -925,7 +932,7 @@ BEGIN
 			AND NRG_FWK.PG_ProgTypeID IS NULL
 			AND NRG_FWK.PG_FrameworkID = ER.PG_FrameworkID
 			AND NRG_FWK.PG_AppStandardID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRA_FWK
+		LEFT JOIN #NARTsStd NRA_FWK
 			ON NRA_FWK.PG_ExpEndYrID = @NatRateYear
 			AND NRA_FWK.PG_CollegeTypeID = 0 --ALL
 			AND NRA_FWK.PG_WBLFundAgeGroupID IS NULL
@@ -938,7 +945,7 @@ BEGIN
 
 	SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRG_FWKPRG
+		LEFT JOIN #NARTsStd NRG_FWKPRG
 			ON NRG_FWKPRG.PG_ExpEndYrID = @NatRateYear
 			AND NRG_FWKPRG.PG_CollegeTypeID = 2 --GFE
 			AND NRG_FWKPRG.PG_WBLFundAgeGroupID IS NULL
@@ -947,7 +954,7 @@ BEGIN
 			AND NRG_FWKPRG.PG_ProgTypeID = ER.PG_ProgTypeID
 			AND NRG_FWKPRG.PG_FrameworkID = ER.PG_FrameworkID
 			AND NRG_FWKPRG.PG_AppStandardID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRA_FWKPRG
+		LEFT JOIN #NARTsStd NRA_FWKPRG
 			ON NRA_FWKPRG.PG_ExpEndYrID = @NatRateYear
 			AND NRA_FWKPRG.PG_CollegeTypeID = 0 --ALL
 			AND NRA_FWKPRG.PG_WBLFundAgeGroupID IS NULL
@@ -960,7 +967,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRG_FWPGSSA 
+		LEFT JOIN #NARTsStd NRG_FWPGSSA 
 			ON NRG_FWPGSSA.PG_ExpEndYrID = @NatRateYear
 			AND NRG_FWPGSSA.PG_CollegeTypeID = 2 --GFE
 			AND NRG_FWPGSSA.PG_WBLFundAgeGroupID IS NULL
@@ -969,7 +976,7 @@ BEGIN
 			AND NRG_FWPGSSA.PG_ProgTypeID = ER.PG_ProgTypeID
 			AND NRG_FWPGSSA.PG_FrameworkID = ER.PG_FrameworkID
 			AND NRG_FWPGSSA.PG_AppStandardID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Fwrk_Timely NRA_FWPGSSA 
+		LEFT JOIN #NARTsStd NRA_FWPGSSA 
 			ON NRA_FWPGSSA.PG_ExpEndYrID = @NatRateYear
 			AND NRA_FWPGSSA.PG_CollegeTypeID = 0 --ALL
 			AND NRA_FWPGSSA.PG_WBLFundAgeGroupID IS NULL
@@ -982,7 +989,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_AGE
+		LEFT JOIN #NARTs NRG_AGE
 			ON NRG_AGE.PG_ExpEndYrID = @NatRateYear
 			AND NRG_AGE.PG_CollegeTypeID = 2 --GFE
 			AND NRG_AGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -994,7 +1001,7 @@ BEGIN
 			AND NRG_AGE.PG_SexID IS NULL
 			AND NRG_AGE.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_AGE.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_AGE
+		LEFT JOIN #NARTs NRA_AGE
 			ON NRA_AGE.PG_ExpEndYrID = @NatRateYear
 			AND NRA_AGE.PG_CollegeTypeID = 0 --ALL
 			AND NRA_AGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1010,7 +1017,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_GEN
+		LEFT JOIN #NARTs NRG_GEN
 			ON NRG_GEN.PG_ExpEndYrID = @NatRateYear
 			AND NRG_GEN.PG_CollegeTypeID = 2 --GFE
 			AND NRG_GEN.PG_WBLFundAgeGroupID IS NULL
@@ -1022,7 +1029,7 @@ BEGIN
 			AND NRG_GEN.PG_SexID = ER.PG_SexID
 			AND NRG_GEN.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_GEN.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_GEN
+		LEFT JOIN #NARTs NRA_GEN
 			ON NRA_GEN.PG_ExpEndYrID = @NatRateYear
 			AND NRA_GEN.PG_CollegeTypeID = 0 --ALL
 			AND NRA_GEN.PG_WBLFundAgeGroupID IS NULL
@@ -1038,7 +1045,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_GENAGE
+		LEFT JOIN #NARTs NRG_GENAGE
 			ON NRG_GENAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRG_GENAGE.PG_CollegeTypeID = 2 --GFE
 			AND NRG_GENAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1050,7 +1057,7 @@ BEGIN
 			AND NRG_GENAGE.PG_SexID = ER.PG_SexID
 			AND NRG_GENAGE.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_GENAGE.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_GENAGE
+		LEFT JOIN #NARTs NRA_GENAGE
 			ON NRA_GENAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRA_GENAGE.PG_CollegeTypeID = 0 --ALL
 			AND NRA_GENAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1066,7 +1073,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_SSA1
+		LEFT JOIN #NARTs NRG_SSA1
 			ON NRG_SSA1.PG_ExpEndYrID = @NatRateYear
 			AND NRG_SSA1.PG_CollegeTypeID = 2 --GFE
 			AND NRG_SSA1.PG_WBLFundAgeGroupID IS NULL
@@ -1078,7 +1085,7 @@ BEGIN
 			AND NRG_SSA1.PG_SexID IS NULL
 			AND NRG_SSA1.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_SSA1.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_SSA1
+		LEFT JOIN #NARTs NRA_SSA1
 			ON NRA_SSA1.PG_ExpEndYrID = @NatRateYear
 			AND NRA_SSA1.PG_CollegeTypeID = 0 --ALL
 			AND NRA_SSA1.PG_WBLFundAgeGroupID IS NULL
@@ -1094,7 +1101,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_SSA1AGE
+		LEFT JOIN #NARTs NRG_SSA1AGE
 			ON NRG_SSA1AGE.PG_ExpEndYrID = @NatRateYear
 			AND NRG_SSA1AGE.PG_CollegeTypeID = 2 --GFE
 			AND NRG_SSA1AGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1106,7 +1113,7 @@ BEGIN
 			AND NRG_SSA1AGE.PG_SexID IS NULL
 			AND NRG_SSA1AGE.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_SSA1AGE.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_SSA1AGE
+		LEFT JOIN #NARTs NRA_SSA1AGE
 			ON NRA_SSA1AGE.PG_ExpEndYrID = @NatRateYear
 			AND NRA_SSA1AGE.PG_CollegeTypeID = 0 --ALL
 			AND NRA_SSA1AGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1122,7 +1129,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_SSA2
+		LEFT JOIN #NARTs NRG_SSA2
 			ON NRG_SSA2.PG_ExpEndYrID = @NatRateYear
 			AND NRG_SSA2.PG_CollegeTypeID = 2 --GFE
 			AND NRG_SSA2.PG_WBLFundAgeGroupID IS NULL
@@ -1134,7 +1141,7 @@ BEGIN
 			AND NRG_SSA2.PG_SexID IS NULL
 			AND NRG_SSA2.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_SSA2.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_SSA2
+		LEFT JOIN #NARTs NRA_SSA2
 			ON NRA_SSA2.PG_ExpEndYrID = @NatRateYear
 			AND NRA_SSA2.PG_CollegeTypeID = 0 --ALL
 			AND NRA_SSA2.PG_WBLFundAgeGroupID IS NULL
@@ -1150,7 +1157,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_SSA2AGE
+		LEFT JOIN #NARTs NRG_SSA2AGE
 			ON NRG_SSA2AGE.PG_ExpEndYrID = @NatRateYear
 			AND NRG_SSA2AGE.PG_CollegeTypeID = 2 --GFE
 			AND NRG_SSA2AGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1162,7 +1169,7 @@ BEGIN
 			AND NRG_SSA2AGE.PG_SexID IS NULL
 			AND NRG_SSA2AGE.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_SSA2AGE.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_SSA2AGE
+		LEFT JOIN #NARTs NRA_SSA2AGE
 			ON NRA_SSA2AGE.PG_ExpEndYrID = @NatRateYear
 			AND NRA_SSA2AGE.PG_CollegeTypeID = 0 --ALL
 			AND NRA_SSA2AGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1178,7 +1185,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_LEV
+		LEFT JOIN #NARTs NRG_LEV
 			ON NRG_LEV.PG_ExpEndYrID = @NatRateYear
 			AND NRG_LEV.PG_CollegeTypeID = 2 --GFE
 			AND NRG_LEV.PG_WBLFundAgeGroupID IS NULL
@@ -1190,7 +1197,7 @@ BEGIN
 			AND NRG_LEV.PG_SexID IS NULL
 			AND NRG_LEV.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_LEV.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_LEV
+		LEFT JOIN #NARTs NRA_LEV
 			ON NRA_LEV.PG_ExpEndYrID = @NatRateYear
 			AND NRA_LEV.PG_CollegeTypeID = 0 --ALL
 			AND NRA_LEV.PG_WBLFundAgeGroupID IS NULL
@@ -1206,7 +1213,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_LEVAGE
+		LEFT JOIN #NARTs NRG_LEVAGE
 			ON NRG_LEVAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRG_LEVAGE.PG_CollegeTypeID = 2 --GFE
 			AND NRG_LEVAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1218,7 +1225,7 @@ BEGIN
 			AND NRG_LEVAGE.PG_SexID IS NULL
 			AND NRG_LEVAGE.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_LEVAGE.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_LEVAGE
+		LEFT JOIN #NARTs NRA_LEVAGE
 			ON NRA_LEVAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRA_LEVAGE.PG_CollegeTypeID = 0 --GFE
 			AND NRA_LEVAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1234,7 +1241,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-        LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_ETH
+        LEFT JOIN #NARTs NRG_ETH
 			ON NRG_ETH.PG_ExpEndYrID = @NatRateYear
 			AND NRG_ETH.PG_CollegeTypeID = 2 --GFE
 			AND NRG_ETH.PG_WBLFundAgeGroupID IS NULL
@@ -1246,7 +1253,7 @@ BEGIN
 			AND NRG_ETH.PG_SexID IS NULL
 			AND NRG_ETH.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_ETH.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_ETH
+		LEFT JOIN #NARTs NRA_ETH
 			ON NRA_ETH.PG_ExpEndYrID = @NatRateYear
 			AND NRA_ETH.PG_CollegeTypeID = 0 --ALL
 			AND NRA_ETH.PG_WBLFundAgeGroupID IS NULL
@@ -1262,7 +1269,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-        LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_ETHAGE
+        LEFT JOIN #NARTs NRG_ETHAGE
 			ON NRG_ETHAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRG_ETHAGE.PG_CollegeTypeID = 2 --GFE
 			AND NRG_ETHAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1274,7 +1281,7 @@ BEGIN
 			AND NRG_ETHAGE.PG_SexID = ER.PG_SexID
 			AND NRG_ETHAGE.PG_DifficultyorDisabilityID IS NULL
 			AND NRG_ETHAGE.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_ETHAGE
+		LEFT JOIN #NARTs NRA_ETHAGE
 			ON NRA_ETHAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRA_ETHAGE.PG_CollegeTypeID = 0 --ALL
 			AND NRA_ETHAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1290,7 +1297,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_DIF
+		LEFT JOIN #NARTs NRG_DIF
 			ON NRG_DIF.PG_ExpEndYrID = @NatRateYear
 			AND NRG_DIF.PG_CollegeTypeID = 2 --GFE
 			AND NRG_DIF.PG_WBLFundAgeGroupID IS NULL
@@ -1302,7 +1309,7 @@ BEGIN
 			AND NRG_DIF.PG_SexID IS NULL
 			AND NRG_DIF.PG_DifficultyorDisabilityID = ER.PG_DifficultyorDisabilityID
 			AND NRG_DIF.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_DIF
+		LEFT JOIN #NARTs NRA_DIF
 			ON NRA_DIF.PG_ExpEndYrID = @NatRateYear
 			AND NRA_DIF.PG_CollegeTypeID = 0 --ALL
 			AND NRA_DIF.PG_WBLFundAgeGroupID IS NULL
@@ -1318,7 +1325,7 @@ BEGIN
 
     SET @SQLString += 
         N'
-        LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRG_DIFAGE
+        LEFT JOIN #NARTs NRG_DIFAGE
 			ON NRG_DIFAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRG_DIFAGE.PG_CollegeTypeID = 2 --GFE
 			AND NRG_DIFAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
@@ -1330,7 +1337,7 @@ BEGIN
 			AND NRG_DIFAGE.PG_SexID IS NULL
 			AND NRG_DIFAGE.PG_DifficultyorDisabilityID = ER.PG_DifficultyorDisabilityID
 			AND NRG_DIFAGE.PG_LearningDifficultyID IS NULL
-		LEFT JOIN ' + @ProAchieveDatabaseLocation + 'PG_NationalRates_APP_Demo_Timely NRA_DIFAGE
+		LEFT JOIN #NARTs NRA_DIFAGE
 			ON NRA_DIFAGE.PG_ExpEndYrID = @NatRateYear
 			AND NRA_DIFAGE.PG_CollegeTypeID = 0 --ALL
 			AND NRA_DIFAGE.PG_WBLFundAgeGroupID = ER.PG_WBLFundAgeGroupID
