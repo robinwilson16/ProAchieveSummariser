@@ -6,13 +6,6 @@ CREATE OR ALTER PROCEDURE SPR_PRA_GenerateProAchieveSummaryData
 	@ProGeneralDatabaseLocation NVARCHAR(200),
 	@ProAchieveDatabaseLocation NVARCHAR(200),
 	@OutputTableLocation NVARCHAR(200),
-	@UserDefinedTrueValue NVARCHAR(50),
-	@ALSStudentUserDefinedField INT,
-	@LookedAfterStudentUserDefinedField INT,
-	@CareLeaverStudentUserDefinedField INT,
-	@YoungCarerStudentUserDefinedField INT,
-	@YoungParentStudentUserDefinedField INT,
-	@GroupCodeEnrolmentUserDefinedField INT,
     @NumRowsChanged INT OUTPUT, 
 	@ErrorCode INT OUTPUT
 
@@ -30,13 +23,6 @@ BEGIN
 	--DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'ProGeneral.dbo.' --Database/Linked Server location
 	--DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'ProAchieve.dbo.' --Database/Linked Server location
 	--DECLARE @OutputTableLocation NVARCHAR(200) = 'ProAchieveSummariser.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
-	--DECLARE @UserDefinedTrueValue NVARCHAR(50) = 'Y' --The value that indicates ALS is provided - e.g. Y/True
-	--DECLARE @ALSStudentUserDefinedField INT = 1 --UDF where ALS is imported as Y/N
-	--DECLARE @LookedAfterStudentUserDefinedField INT = 3
-	--DECLARE @CareLeaverStudentUserDefinedField INT = 2
-	--DECLARE @YoungCarerStudentUserDefinedField INT = 4
-	--DECLARE @YoungParentStudentUserDefinedField INT = 5
-	--DECLARE @GroupCodeEnrolmentUserDefinedField INT = 1 --UDF where the course group code is stored
 
 	--DECLARE @NumRowsChanged INT
 	--DECLARE @ErrorCode INT
@@ -138,11 +124,16 @@ BEGIN
 					LearningSupportFundName VARCHAR(150) NULL,
 					LearningSupportFundShortName VARCHAR(150) NULL,
 					IsFreeMealsEligible INT NULL,
-                    IsALSRequired INT NULL,
-					IsLookedAfter INT NULL,
-                    IsCareLeaver INT NULL,
-                    IsYoungCarer INT NULL,
-                    IsYoungParent INT NULL,
+					StudentUserDefinedText01 VARCHAR(250) NULL,
+					StudentUserDefinedText02 VARCHAR(250) NULL,
+					StudentUserDefinedText03 VARCHAR(250) NULL,
+					StudentUserDefinedText04 VARCHAR(250) NULL,
+					StudentUserDefinedText05 VARCHAR(250) NULL,
+					StudentUserDefinedNumber01 FLOAT NULL,
+					StudentUserDefinedNumber02 FLOAT NULL,
+					StudentUserDefinedNumber03 FLOAT NULL,
+					StudentUserDefinedNumber04 FLOAT NULL,
+					StudentUserDefinedNumber05 FLOAT NULL,
 			'
 
 			SET @SQLString += 
@@ -171,11 +162,21 @@ BEGIN
 					PathwayName VARCHAR(255) NULL,
 					CourseCode VARCHAR(40) NULL,
 					CourseName VARCHAR(255) NULL,
-					GroupCode VARCHAR(255) NULL,
 					ProviderAimMonitoring1 VARCHAR(20) NULL,
 					ProviderAimMonitoring2 VARCHAR(20) NULL,
 					ProviderAimMonitoring3 VARCHAR(20) NULL,
 					ProviderAimMonitoring4 VARCHAR(20) NULL,
+					EnrolmentUserDefinedText01 VARCHAR(250) NULL,
+					EnrolmentUserDefinedText02 VARCHAR(250) NULL,
+					EnrolmentUserDefinedText03 VARCHAR(250) NULL,
+					EnrolmentUserDefinedText04 VARCHAR(250) NULL,
+					EnrolmentUserDefinedText05 VARCHAR(250) NULL,
+					EnrolmentUserDefinedNumber01 FLOAT NULL,
+					EnrolmentUserDefinedNumber02 FLOAT NULL,
+					EnrolmentUserDefinedNumber03 FLOAT NULL,
+					EnrolmentUserDefinedNumber04 FLOAT NULL,
+					EnrolmentUserDefinedNumber05 FLOAT NULL,
+
 					StartDate DATETIME NULL,
 					ExpEndDate DATETIME NULL,
 					ExpEndDatePlus90Days DATETIME NULL,
@@ -612,13 +613,6 @@ BEGIN
 			@ProGeneralDatabaseLocation,
 			@ProAchieveDatabaseLocation,
 			@OutputTableLocation,
-			@UserDefinedTrueValue,
-			@ALSStudentUserDefinedField,
-			@LookedAfterStudentUserDefinedField,
-			@CareLeaverStudentUserDefinedField,
-			@YoungCarerStudentUserDefinedField,
-			@YoungParentStudentUserDefinedField,
-			@GroupCodeEnrolmentUserDefinedField,
             @NumRowsChanged, 
 	        @ErrorCode';
 
@@ -628,13 +622,6 @@ BEGIN
             @ProGeneralDatabaseLocation NVARCHAR(200),
             @ProAchieveDatabaseLocation NVARCHAR(200),
 			@OutputTableLocation NVARCHAR(200),
-			@UserDefinedTrueValue NVARCHAR(50),
-			@ALSStudentUserDefinedField INT,
-			@LookedAfterStudentUserDefinedField INT,
-			@CareLeaverStudentUserDefinedField INT,
-			@YoungCarerStudentUserDefinedField INT,
-			@YoungParentStudentUserDefinedField INT,
-			@GroupCodeEnrolmentUserDefinedField INT,
             @NumRowsChanged INT OUTPUT, 
 	        @ErrorCode INT OUTPUT';
         
@@ -646,13 +633,6 @@ BEGIN
         @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
         @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
 		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField,
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
@@ -667,13 +647,6 @@ BEGIN
 			@ProGeneralDatabaseLocation,
 			@ProAchieveDatabaseLocation,
 			@OutputTableLocation,
-			@UserDefinedTrueValue,
-			@ALSStudentUserDefinedField,
-			@LookedAfterStudentUserDefinedField,
-			@CareLeaverStudentUserDefinedField,
-			@YoungCarerStudentUserDefinedField,
-			@YoungParentStudentUserDefinedField,
-			@GroupCodeEnrolmentUserDefinedField,
             @NumRowsChanged, 
 	        @ErrorCode';
 
@@ -683,13 +656,6 @@ BEGIN
             @ProGeneralDatabaseLocation NVARCHAR(200),
             @ProAchieveDatabaseLocation NVARCHAR(200),
 			@OutputTableLocation NVARCHAR(200),
-			@UserDefinedTrueValue NVARCHAR(50),
-			@ALSStudentUserDefinedField INT,
-			@LookedAfterStudentUserDefinedField INT,
-			@CareLeaverStudentUserDefinedField INT,
-			@YoungCarerStudentUserDefinedField INT,
-			@YoungParentStudentUserDefinedField INT,
-			@GroupCodeEnrolmentUserDefinedField INT,
             @NumRowsChanged INT OUTPUT, 
 	        @ErrorCode INT OUTPUT';
         
@@ -701,13 +667,6 @@ BEGIN
         @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
         @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
 		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField,
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
@@ -722,13 +681,6 @@ BEGIN
 			@ProGeneralDatabaseLocation,
 			@ProAchieveDatabaseLocation,
 			@OutputTableLocation,
-			@UserDefinedTrueValue,
-			@ALSStudentUserDefinedField,
-			@LookedAfterStudentUserDefinedField,
-			@CareLeaverStudentUserDefinedField,
-			@YoungCarerStudentUserDefinedField,
-			@YoungParentStudentUserDefinedField,
-			@GroupCodeEnrolmentUserDefinedField,
             @NumRowsChanged, 
 	        @ErrorCode';
 
@@ -738,13 +690,6 @@ BEGIN
             @ProGeneralDatabaseLocation NVARCHAR(200),
             @ProAchieveDatabaseLocation NVARCHAR(200),
 			@OutputTableLocation NVARCHAR(200),
-			@UserDefinedTrueValue NVARCHAR(50),
-			@ALSStudentUserDefinedField INT,
-			@LookedAfterStudentUserDefinedField INT,
-			@CareLeaverStudentUserDefinedField INT,
-			@YoungCarerStudentUserDefinedField INT,
-			@YoungParentStudentUserDefinedField INT,
-			@GroupCodeEnrolmentUserDefinedField INT,
             @NumRowsChanged INT OUTPUT, 
 	        @ErrorCode INT OUTPUT';
     
@@ -757,13 +702,6 @@ BEGIN
         @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
         @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
 		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField,
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
@@ -778,13 +716,6 @@ BEGIN
 			@ProGeneralDatabaseLocation,
 			@ProAchieveDatabaseLocation,
 			@OutputTableLocation,
-			@UserDefinedTrueValue,
-			@ALSStudentUserDefinedField,
-			@LookedAfterStudentUserDefinedField,
-			@CareLeaverStudentUserDefinedField,
-			@YoungCarerStudentUserDefinedField,
-			@YoungParentStudentUserDefinedField,
-			@GroupCodeEnrolmentUserDefinedField,
             @NumRowsChanged, 
 	        @ErrorCode';
 
@@ -794,13 +725,6 @@ BEGIN
             @ProGeneralDatabaseLocation NVARCHAR(200),
             @ProAchieveDatabaseLocation NVARCHAR(200),
 			@OutputTableLocation NVARCHAR(200),
-			@UserDefinedTrueValue NVARCHAR(50),
-			@ALSStudentUserDefinedField INT,
-			@LookedAfterStudentUserDefinedField INT,
-			@CareLeaverStudentUserDefinedField INT,
-			@YoungCarerStudentUserDefinedField INT,
-			@YoungParentStudentUserDefinedField INT,
-			@GroupCodeEnrolmentUserDefinedField INT,
             @NumRowsChanged INT OUTPUT, 
 	        @ErrorCode INT OUTPUT';
         
@@ -812,13 +736,6 @@ BEGIN
         @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
         @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
 		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField,
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 	
@@ -833,13 +750,6 @@ BEGIN
 			@ProGeneralDatabaseLocation,
 			@ProAchieveDatabaseLocation,
 			@OutputTableLocation,
-			@UserDefinedTrueValue,
-			@ALSStudentUserDefinedField,
-			@LookedAfterStudentUserDefinedField,
-			@CareLeaverStudentUserDefinedField,
-			@YoungCarerStudentUserDefinedField,
-			@YoungParentStudentUserDefinedField,
-			@GroupCodeEnrolmentUserDefinedField,
             @NumRowsChanged, 
 	        @ErrorCode';
 
@@ -849,13 +759,6 @@ BEGIN
             @ProGeneralDatabaseLocation NVARCHAR(200),
             @ProAchieveDatabaseLocation NVARCHAR(200),
 			@OutputTableLocation NVARCHAR(200),
-			@UserDefinedTrueValue NVARCHAR(50),
-			@ALSStudentUserDefinedField INT,
-			@LookedAfterStudentUserDefinedField INT,
-			@CareLeaverStudentUserDefinedField INT,
-			@YoungCarerStudentUserDefinedField INT,
-			@YoungParentStudentUserDefinedField INT,
-			@GroupCodeEnrolmentUserDefinedField INT,
             @NumRowsChanged INT OUTPUT, 
 	        @ErrorCode INT OUTPUT';
         
@@ -867,13 +770,6 @@ BEGIN
         @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
         @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
 		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField,
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 
@@ -888,13 +784,6 @@ BEGIN
 			@ProGeneralDatabaseLocation,
 			@ProAchieveDatabaseLocation,
 			@OutputTableLocation,
-			@UserDefinedTrueValue,
-			@ALSStudentUserDefinedField,
-			@LookedAfterStudentUserDefinedField,
-			@CareLeaverStudentUserDefinedField,
-			@YoungCarerStudentUserDefinedField,
-			@YoungParentStudentUserDefinedField,
-			@GroupCodeEnrolmentUserDefinedField,
             @NumRowsChanged, 
 	        @ErrorCode';
 
@@ -904,13 +793,6 @@ BEGIN
             @ProGeneralDatabaseLocation NVARCHAR(200),
             @ProAchieveDatabaseLocation NVARCHAR(200),
 			@OutputTableLocation NVARCHAR(200),
-			@UserDefinedTrueValue NVARCHAR(50),
-			@ALSStudentUserDefinedField INT,
-			@LookedAfterStudentUserDefinedField INT,
-			@CareLeaverStudentUserDefinedField INT,
-			@YoungCarerStudentUserDefinedField INT,
-			@YoungParentStudentUserDefinedField INT,
-			@GroupCodeEnrolmentUserDefinedField INT,
             @NumRowsChanged INT OUTPUT, 
 	        @ErrorCode INT OUTPUT';
         
@@ -922,13 +804,6 @@ BEGIN
         @ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
         @ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
 		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField,
         @NumRowsChanged = @NumRowsChanged OUTPUT, 
         @ErrorCode = @ErrorCode OUTPUT;
 

@@ -16,13 +16,6 @@ BEGIN
 	DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'ProGeneral.dbo.' --Database/Linked Server location
 	DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'ProAchieve.dbo.' --Database/Linked Server location
 	DECLARE @OutputTableLocation NVARCHAR(200) = 'ProAchieveSummariser.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
-	DECLARE @UserDefinedTrueValue NVARCHAR(50) = 'Y' --The value that indicates ALS is provided - e.g. Y/True
-	DECLARE @ALSStudentUserDefinedField INT = 1 --UDF where ALS is imported as Y/N
-	DECLARE @LookedAfterStudentUserDefinedField INT = 3
-	DECLARE @CareLeaverStudentUserDefinedField INT = 2
-	DECLARE @YoungCarerStudentUserDefinedField INT = 4
-	DECLARE @YoungParentStudentUserDefinedField INT = 5
-	DECLARE @GroupCodeEnrolmentUserDefinedField INT = 1 --UDF where the course group code is stored
 
 	DECLARE @NumRowsChanged INT
 	DECLARE @ErrorCode INT
@@ -41,13 +34,6 @@ BEGIN
 			@ProGeneralDatabaseLocation,
 			@ProAchieveDatabaseLocation,
 			@OutputTableLocation,
-			@UserDefinedTrueValue,
-			@ALSStudentUserDefinedField,
-			@LookedAfterStudentUserDefinedField,
-			@CareLeaverStudentUserDefinedField,
-			@YoungCarerStudentUserDefinedField,
-			@YoungParentStudentUserDefinedField,
-			@GroupCodeEnrolmentUserDefinedField,
 			@NumRowsChanged, 
 			@ErrorCode';
 
@@ -59,13 +45,6 @@ BEGIN
 			@ProGeneralDatabaseLocation NVARCHAR(200),
 			@ProAchieveDatabaseLocation NVARCHAR(200),
 			@OutputTableLocation NVARCHAR(200),
-			@UserDefinedTrueValue NVARCHAR(50),
-			@ALSStudentUserDefinedField INT,
-			@LookedAfterStudentUserDefinedField INT,
-			@CareLeaverStudentUserDefinedField INT,
-			@YoungCarerStudentUserDefinedField INT,
-			@YoungParentStudentUserDefinedField INT,
-			@GroupCodeEnrolmentUserDefinedField INT,
 			@NumRowsChanged INT OUTPUT, 
 			@ErrorCode INT OUTPUT';
     
@@ -79,13 +58,6 @@ BEGIN
 		@ProGeneralDatabaseLocation = @ProGeneralDatabaseLocation, 
 		@ProAchieveDatabaseLocation = @ProAchieveDatabaseLocation,
 		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField,
 		@NumRowsChanged = @NumRowsChanged OUTPUT,
 		@ErrorCode = @ErrorCode OUTPUT
 

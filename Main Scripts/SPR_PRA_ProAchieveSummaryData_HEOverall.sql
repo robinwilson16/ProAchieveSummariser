@@ -4,13 +4,6 @@ CREATE OR ALTER PROCEDURE SPR_PRA_ProAchieveSummaryData_HEOverall
 	@ProGeneralDatabaseLocation NVARCHAR(200),
 	@ProAchieveDatabaseLocation NVARCHAR(200),
 	@OutputTableLocation NVARCHAR(200),
-	@UserDefinedTrueValue NVARCHAR(50),
-	@ALSStudentUserDefinedField INT,
-	@LookedAfterStudentUserDefinedField INT,
-	@CareLeaverStudentUserDefinedField INT,
-	@YoungCarerStudentUserDefinedField INT,
-	@YoungParentStudentUserDefinedField INT,
-	@GroupCodeEnrolmentUserDefinedField INT,
     @NumRowsChanged INT OUTPUT, 
 	@ErrorCode INT OUTPUT
 AS
@@ -28,13 +21,6 @@ BEGIN
 	--DECLARE @ProGeneralDatabaseLocation NVARCHAR(200) = 'ProGeneral.dbo.' --Database/Linked Server location
 	--DECLARE @ProAchieveDatabaseLocation NVARCHAR(200) = 'ProAchieve.dbo.' --Database/Linked Server location
 	--DECLARE @OutputTableLocation NVARCHAR(200) = 'ProAchieveSummariser.dbo.' --Location where the resulting ProAchieve Summary Data table will be created
-	--DECLARE @UserDefinedTrueValue NVARCHAR(50) = 'Y' --The value that indicates ALS is provided - e.g. Y/True
-	--DECLARE @ALSStudentUserDefinedField INT = 1 --UDF where ALS is imported as Y/N
-	--DECLARE @LookedAfterStudentUserDefinedField INT = 3
-	--DECLARE @CareLeaverStudentUserDefinedField INT = 2
-	--DECLARE @YoungCarerStudentUserDefinedField INT = 4
-	--DECLARE @YoungParentStudentUserDefinedField INT = 5
-	--DECLARE @GroupCodeEnrolmentUserDefinedField INT = 1 --UDF where the course group code is stored
 
 	--DECLARE @NumRowsChanged INT
 	--DECLARE @ErrorCode INT
@@ -136,71 +122,16 @@ BEGIN
     
     SET @SQLString += 
         N'
-			IsALSRequired = 
-				CASE 
-					WHEN
-						CASE 
-							WHEN @ALSStudentUserDefinedField = 1 THEN STU.UserDefined1
-							WHEN @ALSStudentUserDefinedField = 2 THEN STU.UserDefined2
-							WHEN @ALSStudentUserDefinedField = 3 THEN STU.UserDefined3
-							WHEN @ALSStudentUserDefinedField = 4 THEN STU.UserDefined4
-							WHEN @ALSStudentUserDefinedField = 5 THEN STU.UserDefined5
-						END
-					= @UserDefinedTrueValue THEN 1 
-					ELSE 0 
-				END,
-			IsLookedAfter = 
-				CASE 
-					WHEN
-						CASE 
-							WHEN @LookedAfterStudentUserDefinedField = 1 THEN STU.UserDefined1
-							WHEN @LookedAfterStudentUserDefinedField = 2 THEN STU.UserDefined2
-							WHEN @LookedAfterStudentUserDefinedField = 3 THEN STU.UserDefined3
-							WHEN @LookedAfterStudentUserDefinedField = 4 THEN STU.UserDefined4
-							WHEN @LookedAfterStudentUserDefinedField = 5 THEN STU.UserDefined5
-						END
-					= @UserDefinedTrueValue THEN 1 
-					ELSE 0 
-				END,
-			IsCareLeaver = 
-				CASE 
-					WHEN
-						CASE 
-							WHEN @CareLeaverStudentUserDefinedField = 1 THEN STU.UserDefined1
-							WHEN @CareLeaverStudentUserDefinedField = 2 THEN STU.UserDefined2
-							WHEN @CareLeaverStudentUserDefinedField = 3 THEN STU.UserDefined3
-							WHEN @CareLeaverStudentUserDefinedField = 4 THEN STU.UserDefined4
-							WHEN @CareLeaverStudentUserDefinedField = 5 THEN STU.UserDefined5
-						END
-					= @UserDefinedTrueValue THEN 1 
-					ELSE 0 
-				END,
-			IsYoungCarer = 
-				CASE 
-					WHEN
-						CASE 
-							WHEN @YoungCarerStudentUserDefinedField = 1 THEN STU.UserDefined1
-							WHEN @YoungCarerStudentUserDefinedField = 2 THEN STU.UserDefined2
-							WHEN @YoungCarerStudentUserDefinedField = 3 THEN STU.UserDefined3
-							WHEN @YoungCarerStudentUserDefinedField = 4 THEN STU.UserDefined4
-							WHEN @YoungCarerStudentUserDefinedField = 5 THEN STU.UserDefined5
-						END
-					= @UserDefinedTrueValue THEN 1 
-					ELSE 0 
-				END,
-			IsYoungParent = 
-				CASE 
-					WHEN
-						CASE 
-							WHEN @YoungParentStudentUserDefinedField = 1 THEN STU.UserDefined1
-							WHEN @YoungParentStudentUserDefinedField = 2 THEN STU.UserDefined2
-							WHEN @YoungParentStudentUserDefinedField = 3 THEN STU.UserDefined3
-							WHEN @YoungParentStudentUserDefinedField = 4 THEN STU.UserDefined4
-							WHEN @YoungParentStudentUserDefinedField = 5 THEN STU.UserDefined5
-						END
-					= @UserDefinedTrueValue THEN 1 
-					ELSE 0 
-				END,
+			StudentUserDefinedText01 = STU.UserDefined1,
+			StudentUserDefinedText02 = STU.UserDefined2,
+			StudentUserDefinedText03 = STU.UserDefined3,
+			StudentUserDefinedText04 = STU.UserDefined4,
+			StudentUserDefinedText05 = STU.UserDefined5,
+			StudentUserDefinedNumber01 = STU.UserDefinedStat1,
+			StudentUserDefinedNumber02 = STU.UserDefinedStat2,
+			StudentUserDefinedNumber03 = STU.UserDefinedStat3,
+			StudentUserDefinedNumber04 = STU.UserDefinedStat4,
+			StudentUserDefinedNumber05 = STU.UserDefinedStat5,
 	'
 
     SET @SQLString += 
@@ -233,11 +164,28 @@ BEGIN
 			PathwayName = NULL,
 			CourseCode = HE.PG_AggCourseID,
 			CourseName = CRS.PG_AggCourseName,
-			GroupCode = HE.EnrolmentUserDefined1,
 			ProviderAimMonitoring1 = NULL,
 			ProviderAimMonitoring2 = NULL,
 			ProviderAimMonitoring3 = NULL,
 			ProviderAimMonitoring4 = NULL,
+	'
+
+	SET @SQLString += 
+        N'
+			EnrolmentUserDefinedText01 = HE.EnrolmentUserDefined1,
+			EnrolmentUserDefinedText02 = HE.EnrolmentUserDefined2,
+			EnrolmentUserDefinedText03 = HE.EnrolmentUserDefined3,
+			EnrolmentUserDefinedText04 = HE.EnrolmentUserDefined4,
+			EnrolmentUserDefinedText05 = HE.EnrolmentUserDefined5,
+			EnrolmentUserDefinedNumber01 = HE.EnrolmentUserDefinedStat1,
+			EnrolmentUserDefinedNumber02 = HE.EnrolmentUserDefinedStat2,
+			EnrolmentUserDefinedNumber03 = HE.EnrolmentUserDefinedStat3,
+			EnrolmentUserDefinedNumber04 = HE.EnrolmentUserDefinedStat4,
+			EnrolmentUserDefinedNumber05 = HE.EnrolmentUserDefinedStat5,
+	'
+    
+    SET @SQLString += 
+        N'
 			StartDate = HE.StartDate,
 			ExpEndDate = HE.PlannedEndDate,
 			ExpEndDatePlus90Days = HE.PlannedEndDate_Plus90Days,
@@ -723,28 +671,14 @@ BEGIN
 	SET @SQLParams = 
         N'@ProviderRef NVARCHAR(50),
 		@AcademicYear NVARCHAR(5),
-		@OutputTableLocation NVARCHAR(200),
-		@UserDefinedTrueValue NVARCHAR(50),
-		@ALSStudentUserDefinedField INT,
-		@LookedAfterStudentUserDefinedField INT,
-		@CareLeaverStudentUserDefinedField INT,
-		@YoungCarerStudentUserDefinedField INT,
-		@YoungParentStudentUserDefinedField INT,
-		@GroupCodeEnrolmentUserDefinedField INT';
+		@OutputTableLocation NVARCHAR(200)';
 
     EXECUTE sp_executesql 
         @SQLString, 
         @SQLParams, 
 		@ProviderRef = @ProviderRef,
         @AcademicYear = @AcademicYear, 
-		@OutputTableLocation = @OutputTableLocation,
-		@UserDefinedTrueValue = @UserDefinedTrueValue,
-		@ALSStudentUserDefinedField = @ALSStudentUserDefinedField,
-		@LookedAfterStudentUserDefinedField = @LookedAfterStudentUserDefinedField,
-		@CareLeaverStudentUserDefinedField = @CareLeaverStudentUserDefinedField,
-		@YoungCarerStudentUserDefinedField = @YoungCarerStudentUserDefinedField,
-		@YoungParentStudentUserDefinedField = @YoungParentStudentUserDefinedField,
-		@GroupCodeEnrolmentUserDefinedField = @GroupCodeEnrolmentUserDefinedField
+		@OutputTableLocation = @OutputTableLocation
 
     SET @NumRowsChanged = @@ROWCOUNT
 	SET @ErrorCode = @@ERROR
